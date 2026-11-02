@@ -19,6 +19,9 @@ const POSES = [
   { name: 'look-up', extra: 'basic' },
   { name: 'meow', extra: 'basic' },
   { name: 'sleep', extra: 'late' },
+  { name: 'crouch', extra: 'late' },
+  { name: 'pounce', extra: 'late' },
+  { name: 'swipe', extra: 'late' },
 ] as const;
 
 const cats = [
@@ -69,7 +72,8 @@ const sweets = [
       <span class="hero-cat-pos" style={`left:${cat.x - cat.w / 2}%;bottom:${cat.bottom}%;width:${cat.w}%;z-index:${cat.z}`}>
         <span class="hero-slot" style={`--depth:${cat.depth};--enter:${cat.enter}s;--breath:${cat.breath}`}>
           <Cat michi={cat.michi} poses={[...POSES]} sizes={cat.sizes} active="sit" priority={cat.priority} class="hero-cat">
-            <span class="hero-bubble" aria-hidden="true">{t('michi_meow')}</span>
+            <span class="hero-hit" aria-hidden="true"></span>
+            <span class="cat-bubble" aria-hidden="true">{t('michi_meow')}</span>
             <span class="hero-zzz" aria-hidden="true"><i>z</i><i>z</i><i>Z</i></span>
           </Cat>
         </span>
@@ -130,10 +134,12 @@ const sweets = [
 
   .hero-cat-pos {
     position: absolute;
+    pointer-events: none;
   }
 
   .hero-slot {
     display: block;
+    pointer-events: none;
     translate: calc(var(--mx) * var(--depth) * 9px) calc(var(--my) * var(--depth) * 6px);
     transition: translate 0.45s var(--ease-out-quart);
     transform-origin: 50% 100%;
@@ -154,6 +160,7 @@ const sweets = [
     height: auto;
     max-width: none;
     cursor: pointer;
+    pointer-events: auto;
     user-select: none;
     animation: hero-float var(--dur) ease-in-out var(--delay) infinite alternate;
   }
@@ -183,13 +190,37 @@ const sweets = [
     }
   }
 
+  .hero-cat-pos[data-lunge] {
+    animation: hero-lunge 1s var(--ease-out-quart);
+  }
+
+  @keyframes hero-lunge {
+    0%,
+    26% {
+      translate: 0 0;
+    }
+    50%,
+    80% {
+      translate: var(--lx) var(--ly);
+    }
+    100% {
+      translate: 0 0;
+    }
+  }
+
   .hero-cat {
     width: 100%;
-    cursor: pointer;
-    pointer-events: auto;
     transform-origin: 50% 100%;
     animation: hero-breathe 3.6s ease-in-out var(--breath, 0s) infinite alternate;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  .hero-hit {
+    position: absolute;
+    inset: 8% 18% 5% 18%;
+    z-index: 1;
+    cursor: pointer;
+    pointer-events: auto;
   }
 
   .hero-cat[data-sleeping] {
@@ -225,41 +256,6 @@ const sweets = [
     100% {
       transform: translateY(0) scale(1, 1);
     }
-  }
-
-  .hero-bubble {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    z-index: 6;
-    translate: -50% 0;
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    background: var(--color-crema);
-    color: var(--color-chocolate);
-    font-size: 0.82rem;
-    font-weight: 800;
-    white-space: nowrap;
-    box-shadow: 0 6px 18px -6px rgb(0 0 0 / 0.55);
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .hero-bubble::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: -5px;
-    width: 10px;
-    height: 10px;
-    translate: -50% 0;
-    rotate: 45deg;
-    background: inherit;
-    border-radius: 2px;
-  }
-
-  .hero-cat[data-talking] .hero-bubble {
-    animation: bubble-pop 1.4s ease forwards;
   }
 
   .hero-zzz {

@@ -12,6 +12,7 @@ import Faq from '../components/ui/Faq.astro';
 import CtaBand from '../components/ui/CtaBand.astro';
 import BrandIcon from '../components/ui/BrandIcon.astro';
 import Michi from '../components/ui/Michi.astro';
+import PeekCat from '../components/ui/PeekCat.astro';
 import { FAQ_ITEMS } from '../data/content';
 import { SITE, whatsappLink } from '../data/site';
 import { faqSchema } from '../lib/schema';
@@ -50,7 +51,7 @@ const socials = [
     <div class="container-site grid gap-12 lg:grid-cols-[1.25fr_0.75fr] lg:gap-10">
       <QuoteForm lang={lang} />
 
-      <aside class="space-y-5" aria-label={t('contact_info_title')}>
+      <aside class="relative mt-20 space-y-5 lg:mt-0" aria-label={t('contact_info_title')}>
         <article class="card p-6" data-reveal>
           <h2 class="text-[1.3rem]">{t('contact_whatsapp')}</h2>
           <a href={whatsappLink(t('whatsapp_default_message'))} target="_blank" rel="noopener" class="btn btn-primary mt-4 w-full">
@@ -115,13 +116,14 @@ const socials = [
             }
           </ul>
         </div>
+        <PeekCat michi="mandarino" beat="-2.1s" class="bottom-[calc(100%-14px)] right-8 w-32 sm:w-40" />
       </aside>
     </div>
   </section>
 
   <section class="section surface-cream-2 pt-16" aria-labelledby="faq-title">
     <div class="container-site">
-      <h2 id="faq-title" class="display-title mb-10 text-center" data-reveal>{t('faq_title')}</h2>
+      <h2 id="faq-title" class="display-title mb-28 text-center sm:mb-32" data-reveal>{t('faq_title')}</h2>
       <Faq lang={lang} />
     </div>
   </section>

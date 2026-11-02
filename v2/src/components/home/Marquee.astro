@@ -11,19 +11,42 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const icons = ['obj-cupcake-pink', 'obj-macaron-blue', 'obj-croissant', 'obj-donut', 'obj-cake-rainbow', 'obj-cupcake-green', 'obj-macaron-pink', 'obj-cake-strawberry'];
-const items = MARQUEE_KEYS.map((key, index) => ({ label: t(key), icon: icons[index] }));
-const loop = [...items, ...items];
+const walkers = [
+  { michi: 'pivi', after: 2, beat: '0s' },
+  { michi: 'mandarino', after: 5, beat: '-0.17s' },
+  { michi: 'zombie', after: 7, beat: '-0.31s' },
+] as const;
+const entries = MARQUEE_KEYS.flatMap((key, index) => {
+  const item = { kind: 'item' as const, label: t(key), icon: icons[index] };
+  const walker = walkers.find((candidate) => candidate.after === index);
+  return walker ? [item, { kind: 'walker' as const, ...walker }] : [item];
+});
+const loop = [...entries, ...entries];
 ---
 
 <div class="marquee relative overflow-hidden border-y border-crema-logo/10 bg-cacao-2 py-5" aria-hidden="true">
   <div class="marquee-track flex w-max items-center">
     {
-      loop.map((item) => (
-        <span class="flex items-center gap-8 pr-8 sm:gap-10 sm:pr-10">
-          <span class="font-display text-[clamp(1.6rem,3.4vw,2.4rem)] font-semibold italic text-crema-logo">{item.label}</span>
-          <Image src={sprite(item.icon)} alt="" width={52} densities={[1, 2]} loading="lazy" class="sprite h-auto w-11 sm:w-[3.25rem]" />
-        </span>
-      ))
+      loop.map((entry) =>
+        entry.kind === 'item' ? (
+          <span class="flex items-center gap-8 pr-8 sm:gap-10 sm:pr-10">
+            <span class="font-display text-[clamp(1.6rem,3.4vw,2.4rem)] font-semibold italic text-crema-logo">{entry.label}</span>
+            <Image src={sprite(entry.icon)} alt="" width={52} densities={[1, 2]} loading="lazy" class="sprite h-auto w-11 sm:w-[3.25rem]" />
+          </span>
+        ) : (
+          <span class="flex items-center pr-8 sm:pr-10">
+            <Image
+              src={sprite(`${entry.michi}-walk`)}
+              alt=""
+              width={80}
+              densities={[1, 2]}
+              loading="lazy"
+              class="sprite marquee-cat h-auto w-[4.2rem] sm:w-20"
+              style={`--beat:${entry.beat}`}
+            />
+          </span>
+        ),
+      )
     }
   </div>
 </div>
@@ -35,5 +58,20 @@ const loop = [...items, ...items];
 
   .marquee:hover .marquee-track {
     animation-play-state: paused;
+  }
+
+  .marquee-cat {
+    scale: -1 1;
+    transform-origin: 50% 100%;
+    animation: marquee-trot 0.46s ease-in-out var(--beat) infinite alternate;
+  }
+
+  @keyframes marquee-trot {
+    from {
+      transform: translateY(0) rotate(-1.6deg);
+    }
+    to {
+      transform: translateY(-5px) rotate(1.6deg);
+    }
   }
 </style>

@@ -13,6 +13,7 @@ Registro de las decisiones del sitio nuevo de Cioccolato (carpeta `v2/`). Cada A
 | [0007](0007-despliegue-en-netlify-desde-v2.md) | Despliegue en Netlify desde `v2/` | Aceptada |
 | [0008](0008-contenido-contacto-y-cotizacion-por-whatsapp.md) | Contenido, contacto y cotización por WhatsApp | Aceptada |
 | [0009](0009-mejoras-futuras.md) | Mejoras futuras | Propuesta |
+| [0010](0010-todas-las-poses-de-los-michis-en-uso.md) | Todas las poses de los michis tienen un lugar visible | Aceptada |
 
 ## Formato
 

@@ -1,10 +1,12 @@
 ---
+import { Image } from 'astro:assets';
 import MapPin from '@lucide/astro/icons/map-pin';
 import Clock from '@lucide/astro/icons/clock';
 import Phone from '@lucide/astro/icons/phone';
 import BrandIcon from '../ui/BrandIcon.astro';
 import Michi from '../ui/Michi.astro';
 import wordScript from '../../assets/brand/wordmark-script.svg?raw';
+import { sprite } from '../../lib/assets';
 import { NAV_ITEMS } from '../../data/content';
 import { SITE, whatsappLink } from '../../data/site';
 import { homePath, pathFor, useTranslations, type Lang } from '../../i18n';
@@ -28,14 +30,17 @@ const visibleSocials = socials.filter((social) => social.href);
 
 <footer class="relative bg-chocolate text-crema-logo">
   <div class="pointer-events-none absolute inset-x-0 top-0 z-10 flex -translate-y-[93%] items-end justify-center gap-3 px-4 sm:gap-10" aria-hidden="false">
-    <div class="pointer-events-auto w-[30vw] max-w-[13.5rem]">
+    <div class="footer-cat pointer-events-auto relative w-[30vw] max-w-[13.5rem]">
       <Michi michi="mandarino" poses={['sleep', 'sit']} width={216} bubble={t('michi_meow')} interact="wake" wakeTo="sit" />
+      <Image src={sprite('obj-yarn-orange')} alt="" width={64} densities={[1, 2]} loading="lazy" class="sprite footer-yarn left-[-14%]" style="--roll:-70%;--spin:-420deg" />
     </div>
-    <div class="pointer-events-auto w-[36vw] max-w-[16rem]">
+    <div class="footer-cat pointer-events-auto relative w-[36vw] max-w-[16rem]">
       <Michi michi="pivi" poses={['sleep', 'sit']} width={256} bubble={t('michi_meow')} interact="wake" wakeTo="sit" />
+      <Image src={sprite('obj-yarn-pink')} alt="" width={64} densities={[1, 2]} loading="lazy" class="sprite footer-yarn left-[4%]" style="--roll:-60%;--spin:-360deg" />
     </div>
-    <div class="pointer-events-auto w-[30vw] max-w-[13.5rem]">
-      <Michi michi="zombie" poses={['sleep', 'sit']} width={216} bubble={t('michi_meow')} interact="wake" wakeTo="sit" />
+    <div class="footer-cat pointer-events-auto relative w-[30vw] max-w-[13.5rem]">
+      <Michi michi="zombie" poses={['sleep', 'swipe']} width={216} bubble={t('michi_meow')} interact="wake" wakeTo="swipe" />
+      <Image src={sprite('obj-yarn-cyan')} alt="" width={64} densities={[1, 2]} loading="lazy" class="sprite footer-yarn right-[-14%]" style="--roll:70%;--spin:420deg" />
     </div>
   </div>
 
@@ -116,3 +121,24 @@ const visibleSocials = socials.filter((social) => social.href);
     </div>
   </div>
 </footer>
+
+<style is:global>
+  .footer-yarn {
+    position: absolute;
+    bottom: -3%;
+    z-index: 2;
+    width: 24%;
+    height: auto;
+    pointer-events: none;
+  }
+
+  .footer-cat:has(.michi[data-talking]) .footer-yarn {
+    animation: footer-yarn-roll 1.7s var(--ease-out-quart) forwards;
+  }
+
+  @keyframes footer-yarn-roll {
+    to {
+      transform: translateX(var(--roll)) rotate(var(--spin));
+    }
+  }
+</style>

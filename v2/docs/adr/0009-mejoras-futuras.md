@@ -17,7 +17,7 @@ Con el preloader y el hero ya aprobados, quedan ideas para seguir mejorando el s
 
 3. **Pivi y el ovillo con el scroll.** La escena de scroll (`Interlude.astro`) ya mueve a Pivi y el ovillo; se puede enriquecer con más poses por tramo y con los otros dos michis reaccionando.
 4. **Sección de los michis (`MichisTeam.astro`).** Tarjetas que cambian de pose al pasar el puntero, parpadean y siguen el cursor, con las mismas poses del hero.
-5. **Banda de cierre y pie.** Más interacción entre Pivi (pose `swipe`) y los michis dormidos del pie.
+5. **Banda de cierre.** Más interacción de Pivi (pose `swipe`) con el botón de cotizar. El pie ya tiene ovillos y saludo (ADR 0010).
 6. **Transiciones entre páginas** coherentes con el telón del preloader.
 
 ### Contenido

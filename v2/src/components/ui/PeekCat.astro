@@ -1,0 +1,31 @@
+---
+import Michi from './Michi.astro';
+
+interface Props {
+  michi: 'pivi' | 'mandarino' | 'zombie';
+  beat?: string;
+  class?: string;
+}
+
+const { michi, beat = '0s', class: className = '' } = Astro.props;
+---
+
+<div class:list={['peek-cat pointer-events-none absolute z-0', className]} style={`--beat:${beat}`} aria-hidden="true">
+  <Michi michi={michi} poses={['peek']} width={220} />
+</div>
+
+<style is:global>
+  .peek-cat {
+    animation: peek-sway 5.2s ease-in-out var(--beat) infinite;
+  }
+
+  @keyframes peek-sway {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(5px) rotate(-1.4deg);
+    }
+  }
+</style>

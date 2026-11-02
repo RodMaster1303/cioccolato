@@ -9,7 +9,7 @@ import Layout from '../layouts/Layout.astro';
 import PageHeader from '../components/ui/PageHeader.astro';
 import MichisTeam from '../components/home/MichisTeam.astro';
 import CtaBand from '../components/ui/CtaBand.astro';
-import Michi from '../components/ui/Michi.astro';
+import TrioPortrait from '../components/ui/TrioPortrait.astro';
 import { SITE } from '../data/site';
 import { useTranslations, type Lang, type UIKey } from '../i18n';
 
@@ -28,7 +28,7 @@ const values = [
 
 <Layout lang={lang} page="about" title={`${t('page_title_about')} | Cioccolato`} description={t('meta_description_about')}>
   <PageHeader title={t('page_title_about')} text={t('about_page_text')}>
-    <Michi slot="art" michi="pivi" poses={['sit', 'blink']} width={230} />
+    <TrioPortrait slot="art" alt={t('hero_image_alt')} />
   </PageHeader>
 
   <section class="section pt-20 sm:pt-28">

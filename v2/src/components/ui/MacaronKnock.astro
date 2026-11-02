@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import Michi from './Michi.astro';
+import Cat from './Cat.astro';
 import { sprite } from '../../lib/assets';
 import { useTranslations, type Lang } from '../../i18n';
 
@@ -24,7 +24,9 @@ const t = useTranslations(lang);
     <div class="knock-stage relative mx-auto w-full max-w-xl" data-reveal style="--d:1">
       <div class="knock-shelf"></div>
       <div class="knock-cat">
-        <Michi michi="mandarino" poses={['sit', 'swipe', 'meow']} width={250} bubble={t('michi_meow')} />
+        <Cat michi="mandarino" poses={[{ name: 'sit' }, { name: 'crouch' }, { name: 'pounce' }, { name: 'swipe' }, { name: 'meow' }]} active="sit" sizes="(min-width: 640px) 280px, 56vw" lazy>
+          <span class="cat-bubble" aria-hidden="true">{t('michi_meow')}</span>
+        </Cat>
       </div>
       <Image src={sprite('obj-macaron-blue')} alt="" width={96} densities={[1, 2]} loading="lazy" class="sprite knock-macaron" />
       <Image src={sprite('obj-cupcake-pink')} alt="" width={84} densities={[1, 2]} loading="lazy" class="sprite knock-cupcake" />
@@ -52,9 +54,9 @@ const t = useTranslations(lang);
 
   .knock-cat {
     position: absolute;
-    left: 6%;
+    left: 0;
     bottom: calc(38% - 14px);
-    width: 44%;
+    width: 56%;
   }
 
   .knock-macaron {
@@ -114,39 +116,40 @@ const t = useTranslations(lang);
 </style>
 
 <script>
-  import { setPose } from '../../scripts/michis';
-
   const scene = document.querySelector<HTMLElement>('[data-knock]');
-  const cat = scene?.querySelector<HTMLElement>('.michi');
+  const cat = scene?.querySelector<HTMLElement>('.cat');
   if (scene && cat) {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let timers: number[] = [];
     let running = false;
+    const show = (pose: string) => cat.querySelectorAll<HTMLElement>('.cat-pose').forEach((image) => image.toggleAttribute('data-active', image.dataset.pose === pose));
     const later = (ms: number, task: () => void) => timers.push(window.setTimeout(task, ms));
     const reset = () => {
       timers.forEach((id) => window.clearTimeout(id));
       timers = [];
       scene.removeAttribute('data-state');
       cat.removeAttribute('data-talking');
-      setPose(cat, 'sit');
+      show('sit');
     };
     const play = () => {
       reset();
-      later(700, () => setPose(cat, 'swipe'));
-      later(900, () => scene.setAttribute('data-state', 'fall'));
-      later(2150, () => {
+      later(450, () => show('crouch'));
+      later(1050, () => show('pounce'));
+      later(1350, () => show('swipe'));
+      later(1500, () => scene.setAttribute('data-state', 'fall'));
+      later(2750, () => {
         scene.setAttribute('data-state', 'landed');
-        setPose(cat, 'meow');
+        show('meow');
         cat.setAttribute('data-talking', '');
       });
-      later(5200, () => {
+      later(5600, () => {
         reset();
         if (running) later(1200, play);
       });
     };
     if (reduce) {
       scene.setAttribute('data-state', 'landed');
-      setPose(cat, 'meow');
+      show('meow');
     } else {
       new IntersectionObserver(
         (entries) => {

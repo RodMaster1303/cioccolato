@@ -85,4 +85,39 @@ const { michi, poses, sizes, active, priority = false, lazy = false, class: clas
   .cat[data-armed~="late"] .cat-pose[data-extra="late"] {
     display: block;
   }
+
+  .cat-bubble {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    z-index: 6;
+    translate: -50% 0;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    background: var(--color-crema);
+    color: var(--color-chocolate);
+    font-size: 0.82rem;
+    font-weight: 800;
+    white-space: nowrap;
+    box-shadow: 0 6px 18px -6px rgb(0 0 0 / 0.55);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .cat-bubble::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    width: 10px;
+    height: 10px;
+    translate: -50% 0;
+    rotate: 45deg;
+    background: inherit;
+    border-radius: 2px;
+  }
+
+  .cat[data-talking] .cat-bubble {
+    animation: bubble-pop 1.4s ease forwards;
+  }
 </style>

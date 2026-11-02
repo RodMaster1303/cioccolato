@@ -9,11 +9,13 @@ interface HeroCat {
   blinking: boolean;
   overrideTimer: number;
   blinkTimer: number;
+  playTimers: number[];
 }
 
 const SPARK_COLORS = ['#f15591', '#f4c864', '#26e9eb', '#8feb58'];
 const SLEEP_AFTER = 24000;
 const WANDER_LOOKS: Look[] = ['look-left', 'look-right', 'look-up'];
+const HUNT_POSES = ['crouch', 'pounce', 'swipe'] as const;
 
 const root = document.querySelector<HTMLElement>('[data-hero-trio]');
 const section = root?.closest('section');
@@ -35,6 +37,7 @@ function start(trio: HTMLElement, hero: HTMLElement): void {
     blinking: false,
     overrideTimer: 0,
     blinkTimer: 0,
+    playTimers: [],
   }));
 
   let visible = true;
@@ -114,6 +117,7 @@ function start(trio: HTMLElement, hero: HTMLElement): void {
 
   function meow(cat: HeroCat, others = true): void {
     if (sleeping) return;
+    clearPlay(cat);
     window.clearTimeout(cat.overrideTimer);
     cat.override = usable(cat.images.get('meow')) ? 'meow' : null;
     render(cat);
@@ -126,6 +130,58 @@ function start(trio: HTMLElement, hero: HTMLElement): void {
       cat.override = null;
       render(cat);
     }, 1250);
+  }
+
+  function canHunt(cat: HeroCat): boolean {
+    return !sleeping && HUNT_POSES.every((name) => usable(cat.images.get(name)));
+  }
+
+  function nearestCat(x: number, y: number): HeroCat {
+    let best = cats[0];
+    let bestDistance = Infinity;
+    cats.forEach((cat) => {
+      const rect = cat.el.getBoundingClientRect();
+      const distance = Math.hypot(x - (rect.left + rect.width / 2), y - (rect.top + rect.height * 0.6));
+      if (distance < bestDistance) {
+        best = cat;
+        bestDistance = distance;
+      }
+    });
+    return best;
+  }
+
+  function clearPlay(cat: HeroCat): void {
+    cat.playTimers.forEach((id) => window.clearTimeout(id));
+    cat.playTimers = [];
+    cat.el.closest<HTMLElement>('.hero-cat-pos')?.removeAttribute('data-lunge');
+  }
+
+  function hunt(cat: HeroCat, x: number, y: number, onStrike: () => void): void {
+    clearPlay(cat);
+    window.clearTimeout(cat.overrideTimer);
+    const rect = cat.el.getBoundingClientRect();
+    const dx = x - (rect.left + rect.width / 2);
+    const dy = y - (rect.top + rect.height * 0.6);
+    HUNT_POSES.forEach((name) => cat.images.get(name)?.toggleAttribute('data-flip', dx < 0));
+    const slot = cat.el.closest<HTMLElement>('.hero-cat-pos');
+    if (slot) {
+      slot.style.setProperty('--lx', `${Math.max(-rect.width * 0.55, Math.min(rect.width * 0.55, dx * 0.4))}px`);
+      slot.style.setProperty('--ly', `${Math.max(-rect.height * 0.3, Math.min(rect.height * 0.12, dy * 0.25))}px`);
+      restart(slot, 'data-lunge');
+    }
+    const step = (ms: number, pose: string | null, task?: () => void) =>
+      cat.playTimers.push(
+        window.setTimeout(() => {
+          cat.override = pose;
+          render(cat);
+          task?.();
+        }, ms),
+      );
+    cat.override = 'crouch';
+    render(cat);
+    step(260, 'pounce');
+    step(540, 'swipe', onStrike);
+    step(1050, null, () => clearPlay(cat));
   }
 
   function scheduleBlink(cat: HeroCat): void {
@@ -173,6 +229,7 @@ function start(trio: HTMLElement, hero: HTMLElement): void {
     cats.forEach((cat, index) => {
       window.setTimeout(() => {
         if (!sleeping || !usable(cat.images.get('sleep'))) return;
+        clearPlay(cat);
         cat.override = 'sleep';
         cat.el.setAttribute('data-sleeping', '');
         render(cat);
@@ -241,7 +298,7 @@ function start(trio: HTMLElement, hero: HTMLElement): void {
   const armBasic = () => idle(() => arm('basic'), 2500);
   if (document.readyState === 'complete') armBasic();
   else window.addEventListener('load', armBasic, { once: true });
-  window.setTimeout(() => arm('late'), 9000);
+  window.setTimeout(() => arm('late'), 3000);
 
   if (finePointer) {
     window.addEventListener(
@@ -270,14 +327,21 @@ function start(trio: HTMLElement, hero: HTMLElement): void {
   trio.querySelectorAll<HTMLElement>('[data-sweet]').forEach((sweet) => {
     sweet.addEventListener('pointerdown', () => {
       if (sleeping) return;
-      sweet.removeAttribute('data-pop');
-      void sweet.offsetWidth;
-      sweet.setAttribute('data-pop', '');
       const rect = sweet.getBoundingClientRect();
       const x = rect.left + rect.width / 2;
       const y = rect.top + rect.height / 2;
-      burst(x, y, 9);
-      lookAt(x, y, 1500);
+      const pop = () => {
+        restart(sweet, 'data-pop');
+        burst(x, y, 9);
+      };
+      const hunter = nearestCat(x, y);
+      if (canHunt(hunter)) {
+        hunt(hunter, x, y, pop);
+        lookAt(x, y, 1300, hunter);
+      } else {
+        pop();
+        lookAt(x, y, 1500);
+      }
     });
     sweet.addEventListener('animationend', (event) => {
       if (event.animationName === 'hero-sweet-pop') sweet.removeAttribute('data-pop');
