@@ -1,0 +1,332 @@
+[
+  {
+    "id": "boda-1",
+    "file": "boda-1.jpeg",
+    "category": "weddings",
+    "width": 1200,
+    "height": 1600,
+    "es": "Mesa de boda con aro floral y tortas con flores azules",
+    "en": "Wedding table with a floral hoop and cakes with blue flowers",
+    "featured": true
+  },
+  {
+    "id": "boda-3",
+    "file": "boda-3.jpeg",
+    "category": "weddings",
+    "width": 720,
+    "height": 947,
+    "es": "Torta de boda de varios pisos con cisnes y flores azules",
+    "en": "Multi-tier wedding cake with swans and blue flowers",
+    "featured": true
+  },
+  {
+    "id": "boda-4",
+    "file": "boda-4.jpeg",
+    "category": "weddings",
+    "width": 780,
+    "height": 1040,
+    "es": "Torta morada con flores y mariposas",
+    "en": "Purple cake with flowers and butterflies",
+    "featured": false
+  },
+  {
+    "id": "boda-5",
+    "file": "boda-5.jpeg",
+    "category": "weddings",
+    "width": 1280,
+    "height": 960,
+    "es": "Mesa de postres de boda con torres de cupcakes y tortas",
+    "en": "Wedding dessert table with cupcake towers and cakes",
+    "featured": true
+  },
+  {
+    "id": "boda-6",
+    "file": "boda-6.jpeg",
+    "category": "weddings",
+    "width": 1200,
+    "height": 1600,
+    "es": "Torta de aniversario con rosas de crema y topper de pareja",
+    "en": "Anniversary cake with cream roses and a couple topper",
+    "featured": false
+  },
+  {
+    "id": "t-19",
+    "file": "t-19.jpeg",
+    "category": "cakes",
+    "width": 1080,
+    "height": 1001,
+    "es": "Torta de capas con chocolate, crema y fresas",
+    "en": "Layered cake with chocolate, cream and strawberries",
+    "featured": true
+  },
+  {
+    "id": "t-9",
+    "file": "t-9.jpeg",
+    "category": "cakes",
+    "width": 720,
+    "height": 720,
+    "es": "Torta temática del Capitán América",
+    "en": "Captain America themed cake",
+    "featured": true
+  },
+  {
+    "id": "t-5",
+    "file": "t-5.jpeg",
+    "category": "cakes",
+    "width": 1200,
+    "height": 1600,
+    "es": "Torta de dos pisos con frutos rojos",
+    "en": "Two-tier cake with berries",
+    "featured": true
+  },
+  {
+    "id": "t-14",
+    "file": "t-14.jpeg",
+    "category": "cakes",
+    "width": 528,
+    "height": 528,
+    "es": "Torta de bautizo azul con zapatitos",
+    "en": "Blue baptism cake with little shoes",
+    "featured": true
+  },
+  {
+    "id": "t-7",
+    "file": "t-7.jpeg",
+    "category": "cakes",
+    "width": 1200,
+    "height": 1419,
+    "es": "Torta temática de safari con león y jirafa",
+    "en": "Safari-themed cake with a lion and a giraffe",
+    "featured": false
+  },
+  {
+    "id": "t-8",
+    "file": "t-8.jpeg",
+    "category": "cakes",
+    "width": 1123,
+    "height": 1357,
+    "es": "Torta de chocolate con crema y cerezas",
+    "en": "Chocolate cake with cream and cherries",
+    "featured": false
+  },
+  {
+    "id": "t-11",
+    "file": "t-11.jpeg",
+    "category": "cakes",
+    "width": 720,
+    "height": 841,
+    "es": "Torta de graduación con birrete y calculadora",
+    "en": "Graduation cake with a cap and a calculator",
+    "featured": false
+  },
+  {
+    "id": "t-13",
+    "file": "t-13.jpeg",
+    "category": "cakes",
+    "width": 1080,
+    "height": 1350,
+    "es": "Torre de mini tortas azules con tema de sirenita",
+    "en": "Tower of blue mini cakes with a mermaid theme",
+    "featured": false
+  },
+  {
+    "id": "t-15",
+    "file": "t-15.jpeg",
+    "category": "cakes",
+    "width": 1080,
+    "height": 1080,
+    "es": "Torta rosada con topper de feliz cumpleaños",
+    "en": "Pink cake with a happy birthday topper",
+    "featured": false
+  },
+  {
+    "id": "t-16",
+    "file": "t-16.jpeg",
+    "category": "cakes",
+    "width": 719,
+    "height": 719,
+    "es": "Torta de cumpleaños de Winnie the Pooh",
+    "en": "Winnie the Pooh birthday cake",
+    "featured": false
+  },
+  {
+    "id": "t-17",
+    "file": "t-17.jpeg",
+    "category": "cakes",
+    "width": 719,
+    "height": 719,
+    "es": "Torta de cumpleaños con dibujo de una niña",
+    "en": "Birthday cake with a drawing of a girl",
+    "featured": false
+  },
+  {
+    "id": "t-21",
+    "file": "t-21.jpeg",
+    "category": "cakes",
+    "width": 1280,
+    "height": 960,
+    "es": "Mesa de cumpleaños con tortas de Winnie the Pooh",
+    "en": "Birthday table with Winnie the Pooh cakes",
+    "featured": false
+  },
+  {
+    "id": "t-20",
+    "file": "t-20.jpeg",
+    "category": "cakes",
+    "width": 581,
+    "height": 873,
+    "es": "Torta con cake pops en forma de ojos",
+    "en": "Cake with eye-shaped cake pops",
+    "featured": false
+  },
+  {
+    "id": "t-23",
+    "file": "t-23.jpeg",
+    "category": "cakes",
+    "width": 903,
+    "height": 876,
+    "es": "Torta con forma de ojo",
+    "en": "Eyeball-shaped cake",
+    "featured": false
+  },
+  {
+    "id": "t-2",
+    "file": "t-2.jpeg",
+    "category": "cakes",
+    "width": 960,
+    "height": 1041,
+    "es": "Torta de corazón con dibujo de pareja y mensaje de aniversario",
+    "en": "Heart-shaped cake with a couple drawing and an anniversary message",
+    "featured": false
+  },
+  {
+    "id": "t-3",
+    "file": "t-3.jpeg",
+    "category": "cakes",
+    "width": 960,
+    "height": 960,
+    "es": "Torta de corazón con ositos y corazones rojos",
+    "en": "Heart cake with little bears and red hearts",
+    "featured": false
+  },
+  {
+    "id": "t-4",
+    "file": "t-4.jpeg",
+    "category": "cakes",
+    "width": 1208,
+    "height": 1226,
+    "es": "Torta blanca con dibujo y mensaje de cumpleaños",
+    "en": "White cake with a drawing and birthday message",
+    "featured": false
+  },
+  {
+    "id": "t-12",
+    "file": "t-12.jpeg",
+    "category": "cakes",
+    "width": 562,
+    "height": 547,
+    "es": "Torta decorada con el logo de una institución",
+    "en": "Cake decorated with an institution's logo",
+    "featured": false
+  },
+  {
+    "id": "t-22",
+    "file": "t-22.jpeg",
+    "category": "cakes",
+    "width": 939,
+    "height": 581,
+    "es": "Torta rectangular de aniversario con logo",
+    "en": "Rectangular anniversary cake with a logo",
+    "featured": false
+  },
+  {
+    "id": "t-1",
+    "file": "t-1.jpg",
+    "category": "cakes",
+    "width": 500,
+    "height": 420,
+    "es": "Torta en forma de corazón con rosas de crema rosada",
+    "en": "Heart-shaped cake with pink cream roses",
+    "featured": false
+  },
+  {
+    "id": "co-1",
+    "file": "co-1.jpeg",
+    "category": "cocktail",
+    "width": 1080,
+    "height": 825,
+    "es": "Bandejas de bocaditos dulces y salados",
+    "en": "Trays of sweet and savory bites",
+    "featured": false
+  },
+  {
+    "id": "co-2",
+    "file": "co-2.jpeg",
+    "category": "cocktail",
+    "width": 802,
+    "height": 1280,
+    "es": "Bandeja de mini hamburguesas",
+    "en": "Tray of mini burgers",
+    "featured": false
+  },
+  {
+    "id": "co-3",
+    "file": "co-3.jpeg",
+    "category": "cocktail",
+    "width": 960,
+    "height": 1280,
+    "es": "Mini hamburguesas y torta en una mesa de evento",
+    "en": "Mini burgers and a cake on an event table",
+    "featured": false
+  },
+  {
+    "id": "rv-4",
+    "file": "rv-4.jpeg",
+    "category": "cocktail",
+    "width": 978,
+    "height": 1280,
+    "es": "Caja de cupcakes con detalle decorado",
+    "en": "Box of cupcakes with a decorated treat",
+    "featured": false
+  },
+  {
+    "id": "rv-2",
+    "file": "rv-2.jpeg",
+    "category": "cocktail",
+    "width": 1600,
+    "height": 1200,
+    "es": "Mesa de postres con torta Cioccolato, donas y pasteles",
+    "en": "Dessert table with a Cioccolato cake, donuts and pastries",
+    "featured": false
+  },
+  {
+    "id": "c-1",
+    "file": "c-1.jpeg",
+    "category": "buffet",
+    "width": 1080,
+    "height": 902,
+    "es": "Plato servido con arroz, ensalada y carne",
+    "en": "Plated dish with rice, salad and meat",
+    "featured": false
+  },
+  {
+    "id": "c-2",
+    "file": "c-2.jpeg",
+    "category": "buffet",
+    "width": 1080,
+    "height": 705,
+    "es": "Plato servido con papa y salsa",
+    "en": "Plated dish with potato and sauce",
+    "featured": false
+  },
+  {
+    "id": "c-3",
+    "file": "c-3.jpeg",
+    "category": "buffet",
+    "width": 1080,
+    "height": 832,
+    "es": "Platos servidos de pollo, maíz y ensalada",
+    "en": "Plated dishes with chicken, corn and salad",
+    "featured": true
+  }
+]

@@ -1,0 +1,162 @@
+---
+import { Image } from 'astro:assets';
+import Michi from './Michi.astro';
+import { sprite } from '../../lib/assets';
+import { useTranslations, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section class="surface-dark relative overflow-hidden py-16 sm:py-24" aria-labelledby="knock-title" data-knock>
+  <div class="stars"></div>
+  <div class="container-site relative grid items-center gap-10 md:grid-cols-[0.9fr_1.1fr]">
+    <div data-reveal>
+      <p class="eyebrow">{t('michi_mandarino_role')}</p>
+      <h2 id="knock-title" class="display-title mt-4">Mandarino</h2>
+      <p class="lead mt-5 max-w-md">{t('michi_mandarino_text')}</p>
+    </div>
+
+    <div class="knock-stage relative mx-auto w-full max-w-xl" data-reveal style="--d:1">
+      <div class="knock-shelf"></div>
+      <div class="knock-cat">
+        <Michi michi="mandarino" poses={['sit', 'swipe', 'meow']} width={250} bubble={t('michi_meow')} />
+      </div>
+      <Image src={sprite('obj-macaron-blue')} alt="" width={96} densities={[1, 2]} loading="lazy" class="sprite knock-macaron" />
+      <Image src={sprite('obj-cupcake-pink')} alt="" width={84} densities={[1, 2]} loading="lazy" class="sprite knock-cupcake" />
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .knock-stage {
+    aspect-ratio: 5 / 3.2;
+  }
+
+  .knock-shelf {
+    position: absolute;
+    left: 2%;
+    right: 2%;
+    top: 62%;
+    height: 14px;
+    border-radius: 8px;
+    background: linear-gradient(var(--color-chocolate-2), var(--color-chocolate));
+    box-shadow:
+      0 10px 24px -8px rgb(0 0 0 / 0.7),
+      inset 0 1px 0 color-mix(in srgb, var(--color-crema-logo) 25%, transparent);
+  }
+
+  .knock-cat {
+    position: absolute;
+    left: 6%;
+    bottom: calc(38% - 14px);
+    width: 44%;
+  }
+
+  .knock-macaron {
+    position: absolute;
+    left: 62%;
+    top: calc(62% - 2.3rem);
+    width: 22%;
+    height: auto;
+    transform-origin: 50% 80%;
+  }
+
+  .knock-cupcake {
+    position: absolute;
+    left: 78%;
+    top: calc(62% - 3.4rem);
+    width: 17%;
+    height: auto;
+  }
+
+  [data-knock][data-state="fall"] .knock-macaron {
+    animation: macaron-fall 1.15s cubic-bezier(0.45, 0, 0.9, 0.6) forwards;
+  }
+
+  [data-knock][data-state="landed"] .knock-macaron {
+    left: 80%;
+    top: 84%;
+    rotate: 312deg;
+  }
+
+  @keyframes macaron-fall {
+    0% {
+      left: 62%;
+      top: calc(62% - 2.3rem);
+      rotate: 0deg;
+    }
+    22% {
+      left: 70%;
+      top: calc(62% - 2.9rem);
+      rotate: 40deg;
+    }
+    72% {
+      left: 79%;
+      top: 84%;
+      rotate: 230deg;
+    }
+    84% {
+      left: 80%;
+      top: 79%;
+      rotate: 270deg;
+    }
+    100% {
+      left: 80%;
+      top: 84%;
+      rotate: 312deg;
+    }
+  }
+</style>
+
+<script>
+  import { setPose } from '../../scripts/michis';
+
+  const scene = document.querySelector<HTMLElement>('[data-knock]');
+  const cat = scene?.querySelector<HTMLElement>('.michi');
+  if (scene && cat) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let timers: number[] = [];
+    let running = false;
+    const later = (ms: number, task: () => void) => timers.push(window.setTimeout(task, ms));
+    const reset = () => {
+      timers.forEach((id) => window.clearTimeout(id));
+      timers = [];
+      scene.removeAttribute('data-state');
+      cat.removeAttribute('data-talking');
+      setPose(cat, 'sit');
+    };
+    const play = () => {
+      reset();
+      later(700, () => setPose(cat, 'swipe'));
+      later(900, () => scene.setAttribute('data-state', 'fall'));
+      later(2150, () => {
+        scene.setAttribute('data-state', 'landed');
+        setPose(cat, 'meow');
+        cat.setAttribute('data-talking', '');
+      });
+      later(5200, () => {
+        reset();
+        if (running) later(1200, play);
+      });
+    };
+    if (reduce) {
+      scene.setAttribute('data-state', 'landed');
+      setPose(cat, 'meow');
+    } else {
+      new IntersectionObserver(
+        (entries) => {
+          running = entries[0].isIntersecting;
+          if (running) play();
+          else reset();
+        },
+        { threshold: 0.45 },
+      ).observe(scene);
+      cat.addEventListener('click', () => play());
+    }
+  }
+</script>

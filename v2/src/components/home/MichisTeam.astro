@@ -1,0 +1,96 @@
+---
+import { Image } from 'astro:assets';
+import Michi from '../ui/Michi.astro';
+import { realPhoto } from '../../lib/assets';
+import { MICHIS } from '../../data/content';
+import { useTranslations, type Lang, type UIKey } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const tilt = ['-5deg', '4deg', '-3deg'];
+---
+
+<section id="michis" class="section relative overflow-hidden text-crema-logo" style="background-color:var(--color-cacao-2)" aria-labelledby="michis-title">
+  <div class="stars"></div>
+  <div class="container-site relative">
+    <div class="mx-auto max-w-2xl text-center" data-reveal>
+      <p class="eyebrow">{t('michis_eyebrow')}</p>
+      <h2 id="michis-title" class="display-title mt-4 text-crema">{t('michis_title')}</h2>
+      <p class="lead mt-5">{t('michis_subtitle')}</p>
+    </div>
+
+    <div class="mt-16 grid gap-x-6 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        MICHIS.map((michi, index) => (
+          <article
+            class="michi-card relative mt-10 rounded-[2rem] border border-crema-logo/12 bg-cacao/70 px-6 pb-8 pt-0 text-center sm:last:col-span-2 sm:last:mx-auto sm:last:max-w-md lg:last:col-span-1 lg:last:max-w-none"
+            data-reveal
+            style={`--accent:${michi.accent};--d:${index}`}
+          >
+            <div class="relative mx-auto -mt-14 w-[min(72%,15rem)]">
+              <Michi
+                michi={michi.id}
+                poses={['sit', 'meow']}
+                width={300}
+                bubble={t('michi_meow')}
+                interact="meow"
+                alt={t('michi_sprite_alt', { name: michi.name })}
+              />
+            </div>
+            <figure class="polaroid absolute left-4 top-6" style={`--tilt:${tilt[index]}`}>
+              <Image
+                src={realPhoto(michi.id)}
+                alt={t(`michi_${michi.id}_photo_alt` as UIKey)}
+                width={112}
+                height={112}
+                densities={[1, 2]}
+                loading="lazy"
+                class="size-[5.6rem] object-cover sm:size-28"
+              />
+            </figure>
+            <h3 class="mt-6 text-[1.7rem] text-crema">{michi.name}</h3>
+            <p class="mt-2 inline-block rounded-full px-3 py-1 text-xs font-extrabold uppercase tracking-[0.16em] text-cacao" style="background:var(--accent)">
+              {t(`michi_${michi.id}_role` as UIKey)}
+            </p>
+            <p class="mx-auto mt-4 max-w-xs text-[0.97rem] text-crema-logo/80">{t(`michi_${michi.id}_text` as UIKey)}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .michi-card {
+    transition:
+      border-color 0.4s,
+      box-shadow 0.5s var(--ease-out-expo),
+      transform 0.5s var(--ease-out-expo);
+  }
+
+  .michi-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--accent);
+    box-shadow:
+      0 0 0 1px var(--accent),
+      0 34px 60px -34px var(--accent);
+  }
+
+  .polaroid {
+    padding: 6px 6px 20px;
+    background: var(--color-crema);
+    border-radius: 6px;
+    rotate: var(--tilt, -4deg);
+    box-shadow: 0 14px 28px -12px rgb(0 0 0 / 0.7);
+    transition: rotate 0.5s var(--ease-spring), scale 0.5s var(--ease-spring);
+  }
+
+  .michi-card:hover .polaroid {
+    rotate: 0deg;
+    scale: 1.08;
+  }
+</style>

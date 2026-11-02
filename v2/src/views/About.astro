@@ -1,0 +1,84 @@
+---
+import MapPin from '@lucide/astro/icons/map-pin';
+import Clock from '@lucide/astro/icons/clock';
+import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
+import Ruler from '@lucide/astro/icons/ruler';
+import Truck from '@lucide/astro/icons/truck';
+import BadgeCheck from '@lucide/astro/icons/badge-check';
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
+import MichisTeam from '../components/home/MichisTeam.astro';
+import CtaBand from '../components/ui/CtaBand.astro';
+import Michi from '../components/ui/Michi.astro';
+import { SITE } from '../data/site';
+import { useTranslations, type Lang, type UIKey } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const values = [
+  { icon: Ruler, n: 1 },
+  { icon: Truck, n: 2 },
+  { icon: BadgeCheck, n: 3 },
+] as const;
+---
+
+<Layout lang={lang} page="about" title={`${t('page_title_about')} | Cioccolato`} description={t('meta_description_about')}>
+  <PageHeader title={t('page_title_about')} text={t('about_page_text')}>
+    <Michi slot="art" michi="pivi" poses={['sit', 'blink']} width={230} />
+  </PageHeader>
+
+  <section class="section pt-20 sm:pt-28">
+    <div class="container-site grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+      <div data-reveal>
+        <p class="font-display text-[clamp(1.7rem,3.4vw,2.6rem)] font-semibold leading-tight">{t('about_lead')}</p>
+        <p class="lead mt-6">{t('about_p1')}</p>
+        <p class="lead mt-4">{t('about_p2')}</p>
+      </div>
+      <ul class="grid gap-4">
+        {
+          values.map((value, index) => (
+            <li class="card flex gap-5 p-5" data-reveal style={`--d:${index}`}>
+              <span class="grid size-14 shrink-0 place-items-center rounded-2xl bg-cacao text-ambar">
+                <value.icon size={26} stroke-width={1.8} aria-hidden="true" />
+              </span>
+              <span>
+                <h2 class="text-[1.25rem]">{t(`about_value_${value.n}_title` as UIKey)}</h2>
+                <p class="mt-1 text-chocolate/75">{t(`about_value_${value.n}_text` as UIKey)}</p>
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <MichisTeam lang={lang} />
+
+  <section class="section surface-cream-2" aria-labelledby="visit-title">
+    <div class="container-site">
+      <div class="card mx-auto grid max-w-4xl gap-8 p-8 sm:p-10 md:grid-cols-[1.2fr_0.8fr] md:items-center" data-reveal>
+        <div>
+          <h2 id="visit-title" class="text-[clamp(1.7rem,3vw,2.3rem)]">{t('about_visit_title')}</h2>
+          <p class="mt-4 flex items-start gap-3 text-chocolate/85">
+            <MapPin size={20} class="mt-1 shrink-0 text-rosa-ink" aria-hidden="true" />
+            <span>{t('about_visit_text')}</span>
+          </p>
+          <p class="mt-3 flex items-start gap-3 text-chocolate/85">
+            <Clock size={20} class="mt-1 shrink-0 text-rosa-ink" aria-hidden="true" />
+            <span>{t('contact_hours')}</span>
+          </p>
+        </div>
+        <a href={SITE.mapsUrl} target="_blank" rel="noopener noreferrer" class="btn btn-primary w-full md:w-auto">
+          {t('contact_directions')}
+          <ArrowUpRight size={18} aria-hidden="true" />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand lang={lang} />
+</Layout>

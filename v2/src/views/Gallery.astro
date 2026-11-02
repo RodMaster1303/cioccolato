@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
+import GalleryGrid from '../components/ui/GalleryGrid.astro';
+import CtaBand from '../components/ui/CtaBand.astro';
+import Michi from '../components/ui/Michi.astro';
+import { useTranslations, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<Layout lang={lang} page="gallery" title={`${t('page_title_gallery')} | Cioccolato`} description={t('meta_description_gallery')}>
+  <PageHeader title={t('page_title_gallery')} text={t('gallery_page_text')}>
+    <Michi slot="art" michi="zombie" poses={['sit', 'meow']} width={230} interact="meow" bubble={t('michi_meow')} />
+  </PageHeader>
+
+  <section class="section surface-cream-2 pt-20 sm:pt-28">
+    <div class="container-site">
+      <GalleryGrid lang={lang} filters />
+    </div>
+  </section>
+
+  <CtaBand lang={lang} />
+</Layout>

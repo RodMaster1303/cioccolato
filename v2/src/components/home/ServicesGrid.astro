@@ -1,0 +1,64 @@
+---
+import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
+import HeartHandshake from '@lucide/astro/icons/heart-handshake';
+import BriefcaseBusiness from '@lucide/astro/icons/briefcase-business';
+import Wine from '@lucide/astro/icons/wine';
+import Package from '@lucide/astro/icons/package';
+import CupSoda from '@lucide/astro/icons/cup-soda';
+import Truck from '@lucide/astro/icons/truck';
+import ConciergeBell from '@lucide/astro/icons/concierge-bell';
+import Utensils from '@lucide/astro/icons/utensils';
+import { SERVICE_IDS, type ServiceId } from '../../data/content';
+import { whatsappLink } from '../../data/site';
+import { useTranslations, type Lang, type UIKey } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const icons = {
+  weddings: HeartHandshake,
+  corporate: BriefcaseBusiness,
+  cocktail: Wine,
+  bento: Package,
+  drinks: CupSoda,
+  delivery: Truck,
+  seated: ConciergeBell,
+  buffet: Utensils,
+} satisfies Record<ServiceId, unknown>;
+const accents = ['var(--color-rosa-brillo)', 'var(--color-naranja)', 'var(--color-cian)', 'var(--color-ambar)'];
+---
+
+<ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+  {
+    SERVICE_IDS.map((id, index) => {
+      const Icon = icons[id];
+      const title = t(`service_${id}_title` as UIKey);
+      return (
+        <li data-reveal style={`--d:${index % 4}`}>
+          <article class="card group flex h-full flex-col p-6">
+            <span
+              class="grid size-14 place-items-center rounded-2xl bg-cacao shadow-[0_10px_24px_-10px_var(--accent)] transition-transform duration-500 ease-[var(--ease-spring)] group-hover:-rotate-6 group-hover:scale-110"
+              style={`--accent:${accents[index % 4]};color:${accents[index % 4]}`}
+            >
+              <Icon size={26} stroke-width={1.8} aria-hidden="true" />
+            </span>
+            <h3 class="mt-5 text-[1.35rem]">{title}</h3>
+            <p class="mt-2 flex-1 text-[0.97rem] text-chocolate/75">{t(`service_${id}_desc` as UIKey)}</p>
+            <a
+              href={whatsappLink(t('service_quote_message', { service: title }))}
+              target="_blank"
+              rel="noopener"
+              class="mt-5 inline-flex items-center gap-1.5 text-sm font-extrabold text-rosa-ink transition-all hover:gap-2.5 hover:text-chocolate"
+            >
+              {t('service_cta')}
+              <ArrowUpRight size={16} aria-hidden="true" />
+            </a>
+          </article>
+        </li>
+      );
+    })
+  }
+</ul>

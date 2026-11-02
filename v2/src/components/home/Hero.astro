@@ -1,0 +1,88 @@
+---
+import ArrowDown from '@lucide/astro/icons/arrow-down';
+import BadgeCheck from '@lucide/astro/icons/badge-check';
+import Truck from '@lucide/astro/icons/truck';
+import CalendarDays from '@lucide/astro/icons/calendar-days';
+import HeroTrio from './HeroTrio.astro';
+import { pathFor, useTranslations, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const quoteHref = `${pathFor(lang, 'contact')}#cotizar`;
+const chips = [
+  { icon: BadgeCheck, key: 'hero_chip_experience' },
+  { icon: Truck, key: 'hero_chip_delivery' },
+  { icon: CalendarDays, key: 'hero_chip_advance' },
+] as const;
+---
+
+<section id="hero" class="surface-dark relative isolate overflow-hidden" aria-labelledby="hero-title">
+  <div class="stars"></div>
+  <div class="pointer-events-none absolute -right-24 top-24 -z-10 size-[34rem] rounded-full bg-rosa/30 blur-[120px]"></div>
+  <div class="pointer-events-none absolute -left-32 bottom-0 -z-10 size-[26rem] rounded-full bg-naranja/18 blur-[110px]"></div>
+
+  <div class="container-site grid items-center gap-4 pb-20 pt-24 sm:pt-28 lg:min-h-[100svh] lg:grid-cols-[1.12fr_0.88fr] lg:gap-8 lg:pb-16 lg:pt-24">
+    <div class="order-2 lg:order-1">
+      <p class="eyebrow hero-in" style="--i:0">{t('hero_eyebrow')}</p>
+      <h1 id="hero-title" class="hero-in mt-5 text-[clamp(2.35rem,4.9vw,4.3rem)] font-semibold leading-[1.04]" style="--i:1">
+        {t('hero_title_a')}
+        <span class="hero-accent">{t('hero_title_b')}</span>
+      </h1>
+      <p class="lead hero-in mt-6 max-w-xl" style="--i:2">{t('hero_subtitle')}</p>
+      <div class="hero-in mt-9 flex flex-wrap gap-4" style="--i:3">
+        <a href={quoteHref} class="btn btn-primary">{t('hero_cta_quote')}</a>
+        <a href={pathFor(lang, 'gallery')} class="btn btn-ghost">{t('hero_cta_gallery')}</a>
+      </div>
+      <ul class="hero-in mt-10 flex flex-wrap gap-3" style="--i:4">
+        {
+          chips.map((chip) => (
+            <li class="chip">
+              <chip.icon size={16} class="text-ambar" aria-hidden="true" />
+              {t(chip.key)}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="order-1 lg:order-2">
+      <HeroTrio lang={lang} />
+    </div>
+  </div>
+
+  <a href="#servicios" class="hero-cue absolute bottom-5 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-1 text-xs font-bold uppercase tracking-[0.2em] text-crema-logo/60 transition-colors hover:text-crema lg:flex">
+    {t('hero_scroll')}
+    <ArrowDown size={16} class="animate-bounce" />
+  </a>
+</section>
+
+<style>
+  .hero-accent {
+    display: inline-block;
+    background: linear-gradient(95deg, var(--color-rosa-brillo), var(--color-ambar) 70%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    padding-bottom: 0.08em;
+  }
+
+  .hero-in {
+    opacity: 1;
+  }
+
+  :global(html.js:not(.intro-done)) .hero-in {
+    animation: hero-rise 0.9s var(--ease-out-expo) both;
+    animation-delay: calc(var(--i) * 110ms + var(--hero-delay, 0.2s));
+  }
+
+  @keyframes hero-rise {
+    from {
+      opacity: 0;
+      transform: translateY(26px);
+    }
+  }
+</style>

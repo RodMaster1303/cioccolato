@@ -1,0 +1,226 @@
+{
+  "michis": {
+    "pivi-sit": [
+      632,
+      808
+    ],
+    "pivi-blink": [
+      630,
+      808
+    ],
+    "pivi-look-left": [
+      650,
+      808
+    ],
+    "pivi-look-right": [
+      572,
+      808
+    ],
+    "pivi-look-up": [
+      600,
+      808
+    ],
+    "pivi-meow": [
+      591,
+      808
+    ],
+    "pivi-crouch": [
+      712,
+      808
+    ],
+    "pivi-pounce": [
+      808,
+      629
+    ],
+    "pivi-swipe": [
+      740,
+      808
+    ],
+    "pivi-peek": [
+      577,
+      612
+    ],
+    "pivi-sleep": [
+      808,
+      617
+    ],
+    "pivi-walk": [
+      808,
+      802
+    ],
+    "mandarino-sit": [
+      628,
+      808
+    ],
+    "mandarino-blink": [
+      641,
+      808
+    ],
+    "mandarino-look-left": [
+      597,
+      808
+    ],
+    "mandarino-look-right": [
+      630,
+      808
+    ],
+    "mandarino-look-up": [
+      674,
+      808
+    ],
+    "mandarino-meow": [
+      630,
+      808
+    ],
+    "mandarino-crouch": [
+      757,
+      808
+    ],
+    "mandarino-pounce": [
+      808,
+      681
+    ],
+    "mandarino-swipe": [
+      758,
+      808
+    ],
+    "mandarino-peek": [
+      699,
+      696
+    ],
+    "mandarino-sleep": [
+      808,
+      590
+    ],
+    "mandarino-walk": [
+      784,
+      808
+    ],
+    "zombie-sit": [
+      616,
+      808
+    ],
+    "zombie-blink": [
+      614,
+      808
+    ],
+    "zombie-look-left": [
+      599,
+      808
+    ],
+    "zombie-look-right": [
+      605,
+      808
+    ],
+    "zombie-look-up": [
+      616,
+      808
+    ],
+    "zombie-meow": [
+      614,
+      808
+    ],
+    "zombie-crouch": [
+      774,
+      808
+    ],
+    "zombie-pounce": [
+      808,
+      557
+    ],
+    "zombie-swipe": [
+      802,
+      793
+    ],
+    "zombie-peek": [
+      593,
+      662
+    ],
+    "zombie-sleep": [
+      808,
+      559
+    ],
+    "zombie-walk": [
+      808,
+      761
+    ]
+  },
+  "props": {
+    "obj-yarn-pink": [
+      462,
+      488
+    ],
+    "obj-yarn-cyan": [
+      444,
+      488
+    ],
+    "obj-yarn-orange": [
+      488,
+      425
+    ],
+    "obj-cupcake-pink": [
+      389,
+      488
+    ],
+    "obj-cupcake-yellow": [
+      383,
+      488
+    ],
+    "obj-cupcake-green": [
+      375,
+      488
+    ],
+    "obj-macaron-blue": [
+      488,
+      418
+    ],
+    "obj-macaron-pink": [
+      488,
+      417
+    ],
+    "obj-croissant": [
+      488,
+      414
+    ],
+    "obj-donut": [
+      488,
+      446
+    ],
+    "obj-cake-rainbow": [
+      470,
+      488
+    ],
+    "obj-cake-strawberry": [
+      488,
+      477
+    ]
+  },
+  "trio": {
+    "box": [
+      12,
+      142,
+      2018,
+      2020
+    ],
+    "size": [
+      1600,
+      1498
+    ],
+    "bboxes": [
+      [
+        "mandarino",
+        218,
+        329,
+        976,
+        1737
+      ],
+      [
+        "zombie",
+        1056,
+        546,
+        1871,
+        1721
+      ]
+    ]
+  }
+}

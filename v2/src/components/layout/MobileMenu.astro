@@ -1,0 +1,83 @@
+---
+import X from '@lucide/astro/icons/x';
+import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import Michi from '../ui/Michi.astro';
+import { NAV_ITEMS } from '../../data/content';
+import { SITE, whatsappLink } from '../../data/site';
+import { pathFor, useTranslations, type Lang, type PageKey } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+  page: PageKey | '404';
+}
+
+const { lang, page } = Astro.props;
+const t = useTranslations(lang);
+const switcherPage: PageKey = page === '404' ? 'home' : page;
+const items = [{ page: 'home' as PageKey, labelKey: 'nav_home' as const }, ...NAV_ITEMS];
+---
+
+<dialog
+  id="mobile-menu"
+  aria-label={t('menu_label')}
+  class="m-0 h-dvh max-h-none w-full max-w-none overflow-hidden border-0 bg-cacao p-0 text-crema backdrop:bg-transparent"
+>
+  <div class="stars"></div>
+  <div class="relative flex h-full flex-col px-6 pb-8 pt-5">
+    <div class="flex items-center justify-between">
+      <LanguageSwitcher lang={lang} page={switcherPage} />
+      <button
+        type="button"
+        data-menu-close
+        aria-label={t('menu_close')}
+        class="grid size-11 place-items-center rounded-full border border-crema-logo/25 text-crema"
+      >
+        <X size={22} />
+      </button>
+    </div>
+
+    <nav class="mt-8 flex flex-1 flex-col justify-center gap-1" aria-label={t('nav_main_label')}>
+      {
+        items.map((item, index) => (
+          <a
+            href={pathFor(lang, item.page)}
+            style={`--i:${index}`}
+            class="menu-link font-display text-[2.2rem] font-semibold leading-tight text-crema transition-colors hover:text-rosa-brillo aria-[current=page]:text-rosa-brillo sm:text-5xl"
+            aria-current={item.page === page ? 'page' : undefined}
+          >
+            {t(item.labelKey)}
+          </a>
+        ))
+      }
+    </nav>
+
+    <a href={whatsappLink(t('whatsapp_default_message'))} target="_blank" rel="noopener" class="btn btn-primary w-full">
+      {t('cta_button')}
+      <ArrowUpRight size={18} />
+    </a>
+    <p class="mt-4 text-center text-sm text-crema-logo/70">{SITE.phoneDisplay}</p>
+
+    <div class="pointer-events-none absolute bottom-24 right-4 w-28 opacity-95">
+      <Michi michi="pivi" poses={['peek']} width={140} />
+    </div>
+  </div>
+</dialog>
+
+<style is:global>
+  #mobile-menu[open] .menu-link {
+    animation: menu-in 0.7s var(--ease-out-expo) both;
+    animation-delay: calc(var(--i) * 60ms + 80ms);
+  }
+
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+      transform: translateX(-24px);
+    }
+  }
+
+  #mobile-menu::backdrop {
+    background: transparent;
+  }
+</style>

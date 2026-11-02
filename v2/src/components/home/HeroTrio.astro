@@ -1,0 +1,339 @@
+---
+import { Image } from 'astro:assets';
+import Cat from '../ui/Cat.astro';
+import { sprite } from '../../lib/assets';
+import { useTranslations, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const POSES = [
+  { name: 'sit' },
+  { name: 'blink', extra: 'basic' },
+  { name: 'look-left', extra: 'basic' },
+  { name: 'look-right', extra: 'basic' },
+  { name: 'look-up', extra: 'basic' },
+  { name: 'meow', extra: 'basic' },
+  { name: 'sleep', extra: 'late' },
+] as const;
+
+const cats = [
+  { michi: 'pivi', x: 50, w: 69, bottom: 12, z: 2, depth: 0.5, enter: 0.1, breath: '0s', sizes: '(min-width: 1024px) 453px, (min-width: 640px) 55vw, 48vw', priority: true },
+  { michi: 'mandarino', x: 22, w: 46, bottom: 8, z: 3, depth: 0.9, enter: 0.25, breath: '-1.3s', sizes: '(min-width: 1024px) 302px, (min-width: 640px) 37vw, 32vw', priority: false },
+  { michi: 'zombie', x: 78, w: 44.7, bottom: 7, z: 3, depth: 0.9, enter: 0.4, breath: '-2.2s', sizes: '(min-width: 1024px) 293px, (min-width: 640px) 36vw, 31vw', priority: false },
+] as const;
+
+const sweets = [
+  { name: 'obj-cake-strawberry', x: 21, y: 15, w: 16, depth: 1.3, z: 1, enter: 0.5, dur: 5.4, delay: -1, rot: -8 },
+  { name: 'obj-cake-rainbow', x: 79, y: 17, w: 17, depth: 1.1, z: 1, enter: 0.58, dur: 6.2, delay: -2.4, rot: 6 },
+  { name: 'obj-cupcake-green', x: 93, y: 43, w: 11.5, depth: 1.5, z: 1, enter: 0.66, dur: 4.8, delay: -0.6, rot: 9 },
+  { name: 'obj-cupcake-yellow', x: 7, y: 45, w: 12.5, depth: 1.4, z: 1, enter: 0.74, dur: 5.8, delay: -3.1, rot: -7 },
+  { name: 'obj-macaron-blue', x: 9, y: 69, w: 10, depth: 1.7, z: 4, enter: 0.82, dur: 4.6, delay: -1.8, rot: -12 },
+  { name: 'obj-cupcake-pink', x: 92, y: 69, w: 10.5, depth: 1.6, z: 4, enter: 0.9, dur: 5.1, delay: -2.8, rot: 8 },
+  { name: 'obj-croissant', x: 31, y: 92, w: 17, depth: 1.9, z: 4, enter: 0.98, dur: 5.6, delay: -0.3, rot: -5 },
+  { name: 'obj-donut', x: 50, y: 93.5, w: 13.5, depth: 2, z: 4, enter: 1.06, dur: 4.9, delay: -2, rot: 10 },
+  { name: 'obj-macaron-pink', x: 68, y: 92, w: 10, depth: 1.8, z: 4, enter: 1.14, dur: 5.3, delay: -1.2, rot: -9 },
+] as const;
+---
+
+<div class="hero-trio" data-hero-trio role="img" aria-label={t('hero_image_alt')}>
+  <span class="hero-halo"></span>
+  {
+    sweets.map((sweet) => {
+      const meta = sprite(sweet.name);
+      return (
+        <span class="hero-pos" style={`left:${sweet.x}%;top:${sweet.y}%;width:${sweet.w}%;z-index:${sweet.z}`}>
+          <span class="hero-slot" style={`--depth:${sweet.depth};--enter:${sweet.enter}s`}>
+            <Image
+              src={meta}
+              alt=""
+              widths={[120, 180, 240]}
+              sizes={`(min-width: 1024px) ${Math.round(sweet.w * 6.56)}px, ${Math.round(sweet.w * 0.8)}vw`}
+              loading="eager"
+              decoding="async"
+              class="hero-sweet"
+              data-sweet
+              style={`--dur:${sweet.dur}s;--delay:${sweet.delay}s;--rot:${sweet.rot}deg;aspect-ratio:${meta.width}/${meta.height}`}
+            />
+          </span>
+        </span>
+      );
+    })
+  }
+  {
+    cats.map((cat) => (
+      <span class="hero-cat-pos" style={`left:${cat.x - cat.w / 2}%;bottom:${cat.bottom}%;width:${cat.w}%;z-index:${cat.z}`}>
+        <span class="hero-slot" style={`--depth:${cat.depth};--enter:${cat.enter}s;--breath:${cat.breath}`}>
+          <Cat michi={cat.michi} poses={[...POSES]} sizes={cat.sizes} active="sit" priority={cat.priority} class="hero-cat">
+            <span class="hero-bubble" aria-hidden="true">{t('michi_meow')}</span>
+            <span class="hero-zzz" aria-hidden="true"><i>z</i><i>z</i><i>Z</i></span>
+          </Cat>
+        </span>
+      </span>
+    ))
+  }
+</div>
+
+<script>
+  import '../../scripts/hero-cats';
+</script>
+
+<style is:global>
+  .hero-trio {
+    --mx: 0;
+    --my: 0;
+    position: relative;
+    width: min(70vw, 41rem, 78svh);
+    aspect-ratio: 1600 / 1498;
+    margin-inline: auto;
+  }
+
+  @media (min-width: 640px) {
+    .hero-trio {
+      width: min(80vw, 41rem, 78svh);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hero-trio {
+      width: min(88vw, 41rem, 78svh);
+    }
+  }
+
+  .hero-halo {
+    position: absolute;
+    inset: 10% 6% 2%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--color-rosa-brillo) 34%, transparent), transparent);
+    animation: halo-breathe 5s ease-in-out infinite alternate;
+  }
+
+  @keyframes halo-breathe {
+    from {
+      opacity: 0.7;
+      transform: scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1.04);
+    }
+  }
+
+  .hero-pos {
+    position: absolute;
+    translate: -50% -50%;
+  }
+
+  .hero-cat-pos {
+    position: absolute;
+  }
+
+  .hero-slot {
+    display: block;
+    translate: calc(var(--mx) * var(--depth) * 9px) calc(var(--my) * var(--depth) * 6px);
+    transition: translate 0.45s var(--ease-out-quart);
+    transform-origin: 50% 100%;
+    animation: hero-slot-in 0.85s var(--ease-spring) both;
+    animation-delay: calc(var(--enter) + var(--hero-delay, 0.2s));
+  }
+
+  @keyframes hero-slot-in {
+    from {
+      opacity: 0;
+      transform: translateY(10%) scale(0.6);
+    }
+  }
+
+  .hero-sweet {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: none;
+    cursor: pointer;
+    user-select: none;
+    animation: hero-float var(--dur) ease-in-out var(--delay) infinite alternate;
+  }
+
+  .hero-sweet[data-pop] {
+    animation: hero-sweet-pop 0.6s var(--ease-spring);
+  }
+
+  @keyframes hero-float {
+    from {
+      transform: translateY(0) rotate(calc(var(--rot) * -0.4));
+    }
+    to {
+      transform: translateY(-7%) rotate(var(--rot));
+    }
+  }
+
+  @keyframes hero-sweet-pop {
+    0% {
+      transform: scale(1) rotate(0);
+    }
+    35% {
+      transform: scale(1.32) rotate(calc(var(--rot) * 2));
+    }
+    100% {
+      transform: scale(1) rotate(0);
+    }
+  }
+
+  .hero-cat {
+    width: 100%;
+    cursor: pointer;
+    pointer-events: auto;
+    transform-origin: 50% 100%;
+    animation: hero-breathe 3.6s ease-in-out var(--breath, 0s) infinite alternate;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .hero-cat[data-sleeping] {
+    animation-duration: 5s;
+  }
+
+  .hero-cat[data-hop] {
+    animation: hero-hop 0.7s var(--ease-out-quart);
+  }
+
+  @keyframes hero-breathe {
+    from {
+      transform: scale(1, 1);
+    }
+    to {
+      transform: scale(1.008, 1.022);
+    }
+  }
+
+  @keyframes hero-hop {
+    0% {
+      transform: translateY(0) scale(1, 1);
+    }
+    22% {
+      transform: translateY(-7%) scale(0.97, 1.05);
+    }
+    55% {
+      transform: translateY(0) scale(1.05, 0.93);
+    }
+    78% {
+      transform: translateY(-1.5%) scale(0.99, 1.02);
+    }
+    100% {
+      transform: translateY(0) scale(1, 1);
+    }
+  }
+
+  .hero-bubble {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    z-index: 6;
+    translate: -50% 0;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    background: var(--color-crema);
+    color: var(--color-chocolate);
+    font-size: 0.82rem;
+    font-weight: 800;
+    white-space: nowrap;
+    box-shadow: 0 6px 18px -6px rgb(0 0 0 / 0.55);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .hero-bubble::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    width: 10px;
+    height: 10px;
+    translate: -50% 0;
+    rotate: 45deg;
+    background: inherit;
+    border-radius: 2px;
+  }
+
+  .hero-cat[data-talking] .hero-bubble {
+    animation: bubble-pop 1.4s ease forwards;
+  }
+
+  .hero-zzz {
+    position: absolute;
+    left: 60%;
+    top: 4%;
+    z-index: 6;
+    display: none;
+    pointer-events: none;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--color-crema-logo);
+    text-shadow: 0 0 10px color-mix(in srgb, var(--color-cian) 70%, transparent);
+  }
+
+  .hero-cat[data-sleeping] .hero-zzz {
+    display: block;
+  }
+
+  .hero-zzz i {
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-style: normal;
+    font-size: 1.1rem;
+    opacity: 0;
+    animation: hero-zzz 3.2s ease-in-out infinite;
+  }
+
+  .hero-zzz i:nth-child(2) {
+    font-size: 1.4rem;
+    animation-delay: 1.05s;
+  }
+
+  .hero-zzz i:nth-child(3) {
+    font-size: 1.75rem;
+    animation-delay: 2.1s;
+  }
+
+  @keyframes hero-zzz {
+    0% {
+      opacity: 0;
+      transform: translate(0, 0) rotate(-8deg);
+    }
+    25% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translate(1.6rem, -3.4rem) rotate(10deg);
+    }
+  }
+
+  .hero-spark {
+    position: absolute;
+    z-index: 7;
+    width: 0.55rem;
+    height: 0.55rem;
+    margin: -0.275rem 0 0 -0.275rem;
+    border-radius: 50%;
+    background: var(--c);
+    box-shadow: 0 0 10px var(--c);
+    pointer-events: none;
+    animation: hero-spark 0.85s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+  }
+
+  @keyframes hero-spark {
+    from {
+      opacity: 1;
+      transform: translate(0, 0) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: translate(var(--dx), var(--dy)) scale(0.2);
+    }
+  }
+</style>

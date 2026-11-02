@@ -1,0 +1,31 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
+import ServicesGrid from '../components/home/ServicesGrid.astro';
+import HowItWorks from '../components/home/HowItWorks.astro';
+import CtaBand from '../components/ui/CtaBand.astro';
+import Michi from '../components/ui/Michi.astro';
+import { useTranslations, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<Layout lang={lang} page="services" title={`${t('page_title_services')} | Cioccolato`} description={t('meta_description_services')}>
+  <PageHeader title={t('page_title_services')} text={t('services_page_text')}>
+    <Michi slot="art" michi="mandarino" poses={['sit', 'meow']} width={230} interact="meow" bubble={t('michi_meow')} />
+  </PageHeader>
+
+  <section class="section pt-20 sm:pt-28">
+    <div class="container-site">
+      <ServicesGrid lang={lang} />
+    </div>
+  </section>
+
+  <HowItWorks lang={lang} />
+  <CtaBand lang={lang} />
+</Layout>

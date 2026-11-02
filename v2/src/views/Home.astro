@@ -1,0 +1,61 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/home/Hero.astro';
+import Marquee from '../components/home/Marquee.astro';
+import ServicesGrid from '../components/home/ServicesGrid.astro';
+import GalleryGrid from '../components/ui/GalleryGrid.astro';
+import Interlude from '../components/home/Interlude.astro';
+import HowItWorks from '../components/home/HowItWorks.astro';
+import MichisTeam from '../components/home/MichisTeam.astro';
+import CtaBand from '../components/ui/CtaBand.astro';
+import { pathFor, useTranslations, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<Layout lang={lang} page="home" title={`Cioccolato | ${t('page_title_home')}`} description={t('meta_description_home')}>
+  <Hero lang={lang} />
+  <Marquee lang={lang} />
+
+  <section id="servicios" class="section" aria-labelledby="services-title">
+    <div class="container-site">
+      <div class="mx-auto max-w-2xl text-center" data-reveal>
+        <p class="eyebrow">{t('services_eyebrow')}</p>
+        <h2 id="services-title" class="display-title mt-4">{t('services_title')}</h2>
+        <p class="lead mt-5">{t('services_subtitle')}</p>
+      </div>
+      <div class="mt-14">
+        <ServicesGrid lang={lang} />
+      </div>
+      <div class="mt-10 text-center" data-reveal>
+        <a href={pathFor(lang, 'services')} class="btn btn-ghost-dark">{t('services_view_all')}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section surface-cream-2" aria-labelledby="gallery-title">
+    <div class="container-site">
+      <div class="mx-auto max-w-2xl text-center" data-reveal>
+        <p class="eyebrow">{t('gallery_eyebrow')}</p>
+        <h2 id="gallery-title" class="display-title mt-4">{t('gallery_title')}</h2>
+        <p class="lead mt-5">{t('gallery_subtitle')}</p>
+      </div>
+      <div class="mt-14">
+        <GalleryGrid lang={lang} featuredOnly />
+      </div>
+      <div class="mt-6 text-center" data-reveal>
+        <a href={pathFor(lang, 'gallery')} class="btn btn-ghost-dark">{t('gallery_view_all')}</a>
+      </div>
+    </div>
+  </section>
+
+  <Interlude lang={lang} />
+  <HowItWorks lang={lang} />
+  <MichisTeam lang={lang} />
+  <CtaBand lang={lang} />
+</Layout>

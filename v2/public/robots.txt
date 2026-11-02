@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://cioccolato.netlify.app/sitemap-index.xml

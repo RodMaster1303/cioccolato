@@ -1,0 +1,130 @@
+---
+import MapPin from '@lucide/astro/icons/map-pin';
+import Clock from '@lucide/astro/icons/clock';
+import Truck from '@lucide/astro/icons/truck';
+import Wallet from '@lucide/astro/icons/wallet';
+import CalendarDays from '@lucide/astro/icons/calendar-days';
+import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
+import QuoteForm from '../components/ui/QuoteForm.astro';
+import Faq from '../components/ui/Faq.astro';
+import CtaBand from '../components/ui/CtaBand.astro';
+import BrandIcon from '../components/ui/BrandIcon.astro';
+import Michi from '../components/ui/Michi.astro';
+import { FAQ_ITEMS } from '../data/content';
+import { SITE, whatsappLink } from '../data/site';
+import { faqSchema } from '../lib/schema';
+import { useTranslations, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const facts = [
+  { icon: Truck, title: t('contact_zone_title'), text: t('contact_zone') },
+  { icon: Wallet, title: t('contact_payments_title'), text: t('contact_payments') },
+  { icon: CalendarDays, title: t('contact_advance_title'), text: t('contact_advance') },
+];
+const socials = [
+  { name: 'facebook', label: 'Facebook', href: SITE.facebook },
+  { name: 'tiktok', label: 'TikTok', href: SITE.tiktok },
+  { name: 'instagram', label: 'Instagram', href: SITE.instagram },
+] as const;
+---
+
+<Layout
+  lang={lang}
+  page="contact"
+  title={`${t('page_title_contact')} | Cioccolato`}
+  description={t('meta_description_contact')}
+  jsonLd={[faqSchema(lang, FAQ_ITEMS)]}
+>
+  <PageHeader title={t('page_title_contact')} text={t('contact_page_text')}>
+    <Michi slot="art" michi="pivi" poses={['look-up', 'meow']} width={230} interact="meow" bubble={t('michi_meow')} />
+  </PageHeader>
+
+  <section class="section pt-20 sm:pt-28">
+    <div class="container-site grid gap-12 lg:grid-cols-[1.25fr_0.75fr] lg:gap-10">
+      <QuoteForm lang={lang} />
+
+      <aside class="space-y-5" aria-label={t('contact_info_title')}>
+        <article class="card p-6" data-reveal>
+          <h2 class="text-[1.3rem]">{t('contact_whatsapp')}</h2>
+          <a href={whatsappLink(t('whatsapp_default_message'))} target="_blank" rel="noopener" class="btn btn-primary mt-4 w-full">
+            <BrandIcon name="whatsapp" size={20} />
+            {SITE.phoneDisplay}
+          </a>
+          <p class="mt-4 text-sm text-chocolate/75">{t('contact_hours_note')}</p>
+        </article>
+
+        <article class="card p-6" data-reveal style="--d:1">
+          <h2 class="flex items-center gap-2 text-[1.3rem]">
+            <MapPin size={20} class="text-rosa-ink" aria-hidden="true" />
+            {t('contact_visit')}
+          </h2>
+          <p class="mt-3 font-semibold">{t('contact_address')}</p>
+          <p class="text-chocolate/75">{t('contact_venue')}</p>
+          <a href={SITE.mapsUrl} target="_blank" rel="noopener noreferrer" class="btn btn-ghost-dark mt-4 w-full">
+            {t('contact_directions')}
+            <ArrowUpRight size={18} aria-hidden="true" />
+          </a>
+          <p class="mt-5 flex items-start gap-2 text-sm">
+            <Clock size={18} class="mt-0.5 shrink-0 text-rosa-ink" aria-hidden="true" />
+            <span><strong>{t('contact_hours_title')}</strong><br />{t('contact_hours')}</span>
+          </p>
+        </article>
+
+        <ul class="grid gap-3" data-reveal style="--d:2">
+          {
+            facts.map((fact) => (
+              <li class="flex items-center gap-4 rounded-2xl bg-crema-2 px-5 py-4">
+                <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-cacao text-ambar">
+                  <fact.icon size={20} aria-hidden="true" />
+                </span>
+                <span>
+                  <strong class="block text-sm">{fact.title}</strong>
+                  <span class="text-chocolate/80">{fact.text}</span>
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+
+        <div data-reveal style="--d:3">
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-rosa-ink">{t('contact_social')}</p>
+          <ul class="mt-3 flex gap-3">
+            {
+              socials
+                .filter((social) => social.href)
+                .map((social) => (
+                  <li>
+                    <a
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={social.label}
+                      class="grid size-12 place-items-center rounded-full bg-cacao text-crema-logo transition-all duration-300 hover:-translate-y-1 hover:text-rosa-brillo"
+                    >
+                      <BrandIcon name={social.name} size={20} />
+                    </a>
+                  </li>
+                ))
+            }
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section surface-cream-2 pt-16" aria-labelledby="faq-title">
+    <div class="container-site">
+      <h2 id="faq-title" class="display-title mb-10 text-center" data-reveal>{t('faq_title')}</h2>
+      <Faq lang={lang} />
+    </div>
+  </section>
+
+  <CtaBand lang={lang} />
+</Layout>

@@ -1,0 +1,581 @@
+---
+import { Image } from 'astro:assets';
+import Cat from '../ui/Cat.astro';
+import wordScript from '../../assets/brand/wordmark-script.svg?raw';
+import wordSub from '../../assets/brand/wordmark-sub.svg?raw';
+import { sprite } from '../../lib/assets';
+import { useTranslations, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const HOLD = 30;
+
+type Step = readonly [pose: string, from: number, to: number, flip?: boolean];
+
+const cats = [
+  {
+    michi: 'pivi',
+    x: 50,
+    w: 58.8,
+    bottom: 5,
+    z: 2,
+    enter: 0.05,
+    sizes: '(min-width: 640px) 320px, 49vw',
+    steps: [['sit', 0.05, 0.78], ['look-left', 0.78, 1.22], ['look-right', 1.22, 1.95], ['meow', 1.95, 2.6], ['sit', 2.6, HOLD]],
+  },
+  {
+    michi: 'mandarino',
+    x: 12,
+    w: 40.9,
+    bottom: 1,
+    z: 3,
+    enter: 0.15,
+    sizes: '(min-width: 640px) 222px, 34vw',
+    steps: [['sit', 0.15, 0.62], ['swipe', 0.62, 0.9], ['look-right', 0.9, 2.2], ['sit', 2.2, HOLD]],
+  },
+  {
+    michi: 'zombie',
+    x: 88,
+    w: 39.6,
+    bottom: 0,
+    z: 3,
+    enter: 0.25,
+    sizes: '(min-width: 640px) 215px, 33vw',
+    steps: [['crouch', 0.25, 1.89, true], ['pounce', 1.89, 2.15, true], ['meow', 2.15, 2.8], ['sit', 2.8, HOLD]],
+  },
+] as const;
+
+const sweets = [
+  { name: 'obj-cake-strawberry', x: 10, y: 25, w: 18, at: 1.95, rot: -10 },
+  { name: 'obj-cupcake-yellow', x: 26, y: 9, w: 12, at: 2.02, rot: 8 },
+  { name: 'obj-cake-rainbow', x: 90, y: 27, w: 19, at: 2.09, rot: 9 },
+  { name: 'obj-cupcake-green', x: 75, y: 9, w: 12, at: 2.16, rot: -8 },
+] as const;
+
+const sparks = Array.from({ length: 8 }, (_, index) => {
+  const angle = (Math.PI * 2 * index) / 8 - Math.PI / 2;
+  const reach = index % 2 === 0 ? 3.1 : 2.2;
+  return {
+    dx: `${(Math.cos(angle) * reach).toFixed(2)}rem`,
+    dy: `${(Math.sin(angle) * reach).toFixed(2)}rem`,
+    color: ['var(--color-rosa-brillo)', 'var(--color-ambar)', 'var(--color-cian)', 'var(--color-lima)'][index % 4],
+  };
+});
+
+const ball = sprite('obj-yarn-pink');
+
+function windows(steps: readonly Step[]) {
+  return steps.map(([name, from, to, flip]) => ({
+    name,
+    flip: flip === true,
+    style: `--on:${from}s;--len:${(to - from).toFixed(2)}s`,
+  }));
+}
+---
+
+<div id="preloader" role="status" aria-label={t('preloader_label')}>
+  <span class="pl-curtain pl-curtain-top"></span>
+  <span class="pl-curtain pl-curtain-bottom"></span>
+  <div class="stars"></div>
+  <div class="pl-stage">
+    <div class="pl-scene">
+      <div class="pl-cats">
+        <span class="pl-glow"></span>
+        {
+          sweets.map((sweet) => {
+            const meta = sprite(sweet.name);
+            return (
+              <span class="pl-sweet-pos" style={`left:${sweet.x}%;top:${sweet.y}%;width:${sweet.w}%`}>
+                <Image
+                  src={meta}
+                  alt=""
+                  widths={[120, 180, 240]}
+                  sizes={`(min-width: 640px) ${Math.round(sweet.w * 5.4)}px, ${Math.round(sweet.w * 0.84)}vw`}
+                  loading="lazy"
+                  decoding="async"
+                  class="pl-sweet"
+                  style={`--at:${sweet.at}s;--rot:${sweet.rot}deg;aspect-ratio:${meta.width}/${meta.height}`}
+                />
+              </span>
+            );
+          })
+        }
+        {
+          cats.map((cat) => (
+            <span class="pl-cat-pos" style={`left:${cat.x - cat.w / 2}%;bottom:${cat.bottom}%;width:${cat.w}%;z-index:${cat.z}`}>
+              <span class="pl-slot" style={`--at:${cat.enter}s`}>
+                <Cat michi={cat.michi} poses={windows(cat.steps)} sizes={cat.sizes} lazy />
+              </span>
+            </span>
+          ))
+        }
+        <div class="pl-lane">
+          <svg class="pl-thread" viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="pl-thread-gradient" x1="0" x2="1" y1="0" y2="0">
+                <stop offset="0" stop-color="#f15591"></stop>
+                <stop offset="0.6" stop-color="#f4c864"></stop>
+                <stop offset="1" stop-color="#26e9eb"></stop>
+              </linearGradient>
+            </defs>
+            <path d="M0 3C8 0.4 16 5.6 25 3S42 0.4 50 3S67 5.6 75 3S92 0.4 100 3" fill="none" stroke="url(#pl-thread-gradient)" stroke-opacity="0.28" stroke-width="7" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
+            <path d="M0 3C8 0.4 16 5.6 25 3S42 0.4 50 3S67 5.6 75 3S92 0.4 100 3" fill="none" stroke="url(#pl-thread-gradient)" stroke-width="2.4" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
+          </svg>
+          <span class="pl-ball">
+            <span class="pl-ball-hop">
+              <Image src={ball} alt="" widths={[60, 90, 120]} sizes="(min-width: 640px) 63px, 10vw" loading="lazy" decoding="async" class="pl-ball-img" />
+            </span>
+          </span>
+          {sparks.map((spark) => <i class="pl-spark" style={`--dx:${spark.dx};--dy:${spark.dy};--c:${spark.color}`}></i>)}
+        </div>
+      </div>
+      <div class="pl-word">
+        <span class="pl-word-art" set:html={wordScript} />
+        <span class="pl-cover"></span>
+      </div>
+    </div>
+    <div class="pl-sub" set:html={wordSub} />
+    <div class="pl-meter"><span></span></div>
+  </div>
+  <span class="pl-shine"></span>
+</div>
+
+<style is:global>
+  #preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: none;
+    place-items: center;
+    overflow: hidden;
+    background: transparent;
+    color: var(--color-crema-logo);
+  }
+
+  #preloader .stars {
+    z-index: 2;
+  }
+
+  html.intro-active #preloader,
+  html.intro-closing #preloader {
+    display: grid;
+  }
+
+  html.intro-closing #preloader {
+    pointer-events: none;
+  }
+
+  .pl-curtain {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 51%;
+    background: var(--color-cacao);
+    z-index: 1;
+    transition: transform 0.9s var(--ease-in-out-quart);
+  }
+
+  .pl-curtain-top {
+    top: 0;
+    transform-origin: top;
+  }
+
+  .pl-curtain-bottom {
+    bottom: 0;
+    transform-origin: bottom;
+  }
+
+  html.intro-closing .pl-curtain-top {
+    transform: translateY(-101%);
+  }
+
+  html.intro-closing .pl-curtain-bottom {
+    transform: translateY(101%);
+  }
+
+  html.intro-closing .pl-stage {
+    opacity: 0;
+    transform: scale(1.06);
+    transition:
+      opacity 0.5s ease,
+      transform 0.9s var(--ease-in-out-quart);
+  }
+
+  html.intro-skip .pl-stage {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  html.intro-skip .pl-curtain {
+    transition-duration: 0.45s;
+  }
+
+  html.intro-active .hero-halo,
+  html.intro-active .hero-sweet,
+  html.intro-active .hero-cat,
+  html.intro-active .marquee-track,
+  html.intro-active .fab-btn::after {
+    animation-play-state: paused;
+  }
+
+  .pl-stage {
+    --W: min(84vw, 34rem, 62svh);
+    --roll: cubic-bezier(0.4, 0.1, 0.3, 1);
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: var(--W);
+  }
+
+  .pl-scene {
+    position: relative;
+    width: 100%;
+  }
+
+  .pl-cats {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 100 / 66;
+  }
+
+  .pl-glow {
+    position: absolute;
+    inset: -6% -10% -2%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--color-rosa-brillo) 34%, transparent), transparent);
+    opacity: 0;
+  }
+
+  html.intro-run .pl-glow {
+    animation: pl-glow 1.8s ease-out 0.1s forwards;
+  }
+
+  .pl-cat-pos {
+    position: absolute;
+  }
+
+  .pl-slot {
+    display: block;
+    opacity: 0;
+    transform-origin: 50% 100%;
+  }
+
+  html.intro-run .pl-slot {
+    animation: pl-pop 0.6s var(--ease-spring) var(--at) forwards;
+  }
+
+  html.intro-run .pl-slot .cat-pose {
+    animation: pl-window var(--len) linear var(--on);
+  }
+
+  .pl-sweet-pos {
+    position: absolute;
+    z-index: 1;
+    translate: -50% -50%;
+  }
+
+  .pl-sweet {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: none;
+    opacity: 0;
+  }
+
+  html.intro-run .pl-sweet {
+    animation: pl-sweet-in 0.6s var(--ease-spring) var(--at) forwards;
+  }
+
+  .pl-lane {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 5%;
+    z-index: 4;
+    height: 0;
+    --ball: calc(var(--W) * 0.115);
+  }
+
+  .pl-thread {
+    position: absolute;
+    left: 6%;
+    bottom: -3px;
+    width: 88%;
+    height: 6px;
+    overflow: visible;
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+
+  html.intro-run .pl-thread {
+    animation: pl-thread 1.15s var(--roll) 0.74s forwards;
+  }
+
+  .pl-ball {
+    position: absolute;
+    left: calc(var(--W) * 0.06 - var(--ball) / 2);
+    bottom: 0;
+    width: var(--ball);
+  }
+
+  html.intro-run .pl-ball {
+    animation: pl-ball-x 1.15s var(--roll) 0.74s forwards;
+  }
+
+  .pl-ball-hop {
+    display: block;
+  }
+
+  html.intro-run .pl-ball-hop {
+    animation: pl-bounce 0.38s ease-in-out 0.74s 3;
+  }
+
+  .pl-ball-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: none;
+    opacity: 0;
+  }
+
+  html.intro-run .pl-ball-img {
+    animation:
+      pl-ball-life 1.2s linear 0.72s both,
+      pl-ball-roll 1.15s var(--roll) 0.74s forwards;
+  }
+
+  .pl-spark {
+    position: absolute;
+    left: 94%;
+    bottom: 0;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin: 0 0 0 -0.25rem;
+    border-radius: 50%;
+    background: var(--c);
+    box-shadow: 0 0 10px var(--c);
+    opacity: 0;
+  }
+
+  html.intro-run .pl-spark {
+    animation: pl-spark 0.7s cubic-bezier(0.2, 0.8, 0.3, 1) 1.9s forwards;
+  }
+
+  .pl-word {
+    position: relative;
+    width: 100%;
+    margin-top: 4%;
+    color: var(--color-crema-logo);
+  }
+
+  .pl-word-art {
+    display: block;
+    filter: drop-shadow(0 0 14px color-mix(in srgb, var(--color-crema-logo) 45%, transparent));
+  }
+
+  .pl-word-art svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .pl-cover {
+    position: absolute;
+    inset: -18% -8% -30% -4%;
+    background: linear-gradient(90deg, transparent 0, var(--color-cacao) 9%);
+  }
+
+  html.intro-run .pl-cover {
+    animation: pl-uncover 1.15s var(--roll) 0.74s forwards;
+  }
+
+  .pl-sub {
+    width: min(48vw, 12rem);
+    margin-top: 0.3rem;
+    color: var(--color-crema-logo);
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  .pl-sub svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  html.intro-run .pl-sub {
+    animation: pl-fade-up 0.6s ease 2.05s forwards;
+  }
+
+  .pl-shine {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    background: linear-gradient(105deg, transparent 40%, color-mix(in srgb, #fff 22%, transparent) 50%, transparent 60%);
+    transform: translateX(-100%);
+    mix-blend-mode: overlay;
+  }
+
+  html.intro-run .pl-shine {
+    animation: pl-shine 0.9s ease-in-out 2.35s forwards;
+  }
+
+  .pl-meter {
+    width: min(52vw, 11rem);
+    height: 3px;
+    margin-top: 0.9rem;
+    border-radius: 3px;
+    background: color-mix(in srgb, var(--color-crema-logo) 18%, transparent);
+    overflow: hidden;
+    opacity: 0;
+  }
+
+  html.intro-run .pl-meter {
+    animation: pl-fade-up 0.4s ease 0.1s forwards;
+  }
+
+  .pl-meter span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-rosa-brillo), var(--color-ambar), var(--color-cian));
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  html.intro-run .pl-meter span {
+    animation: pl-meter 3s var(--ease-in-out-quart) 0.1s forwards;
+  }
+
+  @keyframes pl-pop {
+    0% {
+      opacity: 0;
+      transform: translateY(40px) scale(0.55);
+    }
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes pl-window {
+    from,
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes pl-sweet-in {
+    0% {
+      opacity: 0;
+      transform: scale(0.2) rotate(var(--rot));
+    }
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes pl-thread {
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @keyframes pl-ball-x {
+    to {
+      transform: translateX(calc(var(--W) * 0.88));
+    }
+  }
+
+  @keyframes pl-ball-roll {
+    to {
+      rotate: 820deg;
+    }
+  }
+
+  @keyframes pl-uncover {
+    to {
+      transform: translateX(100%);
+    }
+  }
+
+  @keyframes pl-bounce {
+    50% {
+      transform: translateY(calc(var(--W) * -0.045));
+    }
+  }
+
+  @keyframes pl-ball-life {
+    0% {
+      opacity: 0;
+      scale: 0.3;
+    }
+    7% {
+      opacity: 1;
+      scale: 1.15;
+    }
+    12% {
+      scale: 1;
+    }
+    90% {
+      opacity: 1;
+      scale: 1;
+    }
+    100% {
+      opacity: 0;
+      scale: 0.15;
+    }
+  }
+
+  @keyframes pl-spark {
+    0% {
+      opacity: 1;
+      transform: translate(0, 0) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(var(--dx), var(--dy)) scale(0.2);
+    }
+  }
+
+  @keyframes pl-fade-up {
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes pl-glow {
+    50% {
+      opacity: 1;
+    }
+    to {
+      opacity: 0.55;
+    }
+  }
+
+  @keyframes pl-shine {
+    to {
+      transform: translateX(100%);
+    }
+  }
+
+  @keyframes pl-meter {
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html.intro-active #preloader {
+      display: none;
+    }
+  }
+</style>

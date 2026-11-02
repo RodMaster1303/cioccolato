@@ -1,0 +1,24 @@
+---
+import Home from '../views/Home.astro';
+import Services from '../views/Services.astro';
+import Gallery from '../views/Gallery.astro';
+import Menu from '../views/Menu.astro';
+import About from '../views/About.astro';
+import Contact from '../views/Contact.astro';
+import { allRoutes, type Lang, type PageKey } from '../i18n';
+
+export const getStaticPaths = allRoutes;
+
+const { lang, page } = Astro.props as { lang: Lang; page: PageKey };
+const views = {
+  home: Home,
+  services: Services,
+  gallery: Gallery,
+  menu: Menu,
+  about: About,
+  contact: Contact,
+} satisfies Record<PageKey, unknown>;
+const View = views[page];
+---
+
+<View lang={lang} />

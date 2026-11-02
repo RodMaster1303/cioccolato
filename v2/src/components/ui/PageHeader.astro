@@ -1,0 +1,25 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  text?: string;
+}
+
+const { eyebrow, title, text } = Astro.props;
+---
+
+<section class="surface-dark relative isolate overflow-hidden pb-16 pt-36 md:pb-24 md:pt-44">
+  <div class="stars"></div>
+  <div class="pointer-events-none absolute -right-20 top-10 -z-10 size-[26rem] rounded-full bg-rosa/25 blur-[110px]"></div>
+  <div class="pointer-events-none absolute -left-24 bottom-0 -z-10 size-[20rem] rounded-full bg-naranja/15 blur-[100px]"></div>
+  <div class="container-site relative grid items-center gap-8 md:grid-cols-[1.3fr_0.7fr]">
+    <div>
+      {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+      <h1 class="mt-4 text-[clamp(2.3rem,5.6vw,4.2rem)] font-semibold leading-[1.04]">{title}</h1>
+      {text && <p class="lead mt-5 max-w-xl">{text}</p>}
+    </div>
+    <div class="relative hidden w-[14.5rem] justify-self-end md:block lg:w-[16rem]">
+      <slot name="art" />
+    </div>
+  </div>
+</section>

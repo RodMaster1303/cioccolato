@@ -1,0 +1,88 @@
+---
+import { Image } from 'astro:assets';
+import { catPose } from '../../lib/assets';
+
+interface Pose {
+  name: string;
+  style?: string;
+  flip?: boolean;
+  extra?: 'basic' | 'late';
+}
+
+interface Props {
+  michi: 'pivi' | 'mandarino' | 'zombie';
+  poses: Pose[];
+  sizes: string;
+  active?: string;
+  priority?: boolean;
+  lazy?: boolean;
+  class?: string;
+}
+
+const WIDTHS = [240, 360, 540, 720];
+
+const { michi, poses, sizes, active, priority = false, lazy = false, class: className = '' } = Astro.props;
+---
+
+<span class:list={['cat', className]} data-cat={michi}>
+  {
+    poses.map((pose, index) => (
+      <Image
+        src={catPose(`${michi}-${pose.name}`)}
+        alt=""
+        widths={WIDTHS}
+        sizes={sizes}
+        quality={66}
+        loading={lazy || pose.extra ? 'lazy' : 'eager'}
+        fetchpriority={priority && index === 0 ? 'high' : undefined}
+        decoding="async"
+        class="cat-pose"
+        data-pose={pose.name}
+        data-extra={pose.extra}
+        data-flip={pose.flip ? '' : undefined}
+        data-active={pose.name === active ? '' : undefined}
+        style={pose.style}
+      />
+    ))
+  }
+  <slot />
+</span>
+
+<style is:global>
+  .cat {
+    position: relative;
+    display: block;
+    aspect-ratio: 1;
+  }
+
+  .cat-pose {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    opacity: 0;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .cat-pose[data-active] {
+    opacity: 1;
+  }
+
+  .cat-pose[data-flip] {
+    scale: -1 1;
+  }
+
+  .cat-pose[data-extra] {
+    inset: 1px;
+    width: calc(100% - 2px);
+    height: calc(100% - 2px);
+    display: none;
+  }
+
+  .cat[data-armed~="basic"] .cat-pose[data-extra="basic"],
+  .cat[data-armed~="late"] .cat-pose[data-extra="late"] {
+    display: block;
+  }
+</style>

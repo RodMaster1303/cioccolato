@@ -1,0 +1,39 @@
+---
+import { Image } from 'astro:assets';
+import { sprite } from '../../lib/assets';
+import { MARQUEE_KEYS } from '../../data/content';
+import { useTranslations, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const icons = ['obj-cupcake-pink', 'obj-macaron-blue', 'obj-croissant', 'obj-donut', 'obj-cake-rainbow', 'obj-cupcake-green', 'obj-macaron-pink', 'obj-cake-strawberry'];
+const items = MARQUEE_KEYS.map((key, index) => ({ label: t(key), icon: icons[index] }));
+const loop = [...items, ...items];
+---
+
+<div class="marquee relative overflow-hidden border-y border-crema-logo/10 bg-cacao-2 py-5" aria-hidden="true">
+  <div class="marquee-track flex w-max items-center">
+    {
+      loop.map((item) => (
+        <span class="flex items-center gap-8 pr-8 sm:gap-10 sm:pr-10">
+          <span class="font-display text-[clamp(1.6rem,3.4vw,2.4rem)] font-semibold italic text-crema-logo">{item.label}</span>
+          <Image src={sprite(item.icon)} alt="" width={52} densities={[1, 2]} loading="lazy" class="sprite h-auto w-11 sm:w-[3.25rem]" />
+        </span>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .marquee-track {
+    animation: marquee 46s linear infinite;
+  }
+
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+</style>

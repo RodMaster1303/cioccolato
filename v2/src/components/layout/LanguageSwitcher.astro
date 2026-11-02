@@ -1,0 +1,28 @@
+---
+import Globe from '@lucide/astro/icons/globe';
+import { DEFAULT_LANG, LANGS, pathFor, useTranslations, type Lang, type PageKey } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+  page: PageKey;
+  class?: string;
+}
+
+const { lang, page, class: className = '' } = Astro.props;
+const t = useTranslations(lang);
+const other = LANGS.find((code) => code !== lang) ?? DEFAULT_LANG;
+---
+
+<a
+  href={pathFor(other, page)}
+  hreflang={other}
+  lang={other}
+  aria-label={`${t('language_label')}: ${other === 'es' ? 'Español' : 'English'}`}
+  class:list={[
+    'inline-flex h-11 items-center gap-1.5 rounded-full border border-crema-logo/25 px-3.5 text-sm font-bold text-crema transition-colors duration-300 hover:border-rosa-brillo hover:text-rosa-brillo',
+    className,
+  ]}
+>
+  <Globe size={16} aria-hidden="true" />
+  {other.toUpperCase()}
+</a>

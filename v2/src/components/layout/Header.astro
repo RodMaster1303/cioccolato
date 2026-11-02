@@ -1,0 +1,80 @@
+---
+import { Image } from 'astro:assets';
+import Menu from '@lucide/astro/icons/menu';
+import mark from '../../assets/brand/pivi-mark.webp';
+import wordScript from '../../assets/brand/wordmark-script.svg?raw';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import MobileMenu from './MobileMenu.astro';
+import { NAV_ITEMS } from '../../data/content';
+import { pathFor, useTranslations, type Lang, type PageKey } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+  page: PageKey | '404';
+}
+
+const { lang, page } = Astro.props;
+const t = useTranslations(lang);
+const switcherPage: PageKey = page === '404' ? 'home' : page;
+const quoteHref = `${pathFor(lang, 'contact')}#cotizar`;
+---
+
+<header id="site-header" class="fixed inset-x-0 top-0 z-50 border-b border-transparent transition-[background-color,border-color,backdrop-filter] duration-500">
+  <div class="container-site flex h-[4.5rem] items-center justify-between gap-4">
+    <a href={pathFor(lang, 'home')} class="group flex items-center gap-2.5">
+      <Image
+        src={mark}
+        alt=""
+        width={44}
+        height={44}
+        densities={[1, 2]}
+        loading="eager"
+        class="size-11 transition-transform duration-500 ease-[var(--ease-spring)] group-hover:-rotate-6 group-hover:scale-110"
+      />
+      <span class="wm w-[7.4rem] text-crema-logo drop-shadow-[0_0_10px_rgba(251,230,199,0.35)] sm:w-[8.6rem]" set:html={wordScript} />
+      <span class="sr-only">Cioccolato</span>
+    </a>
+
+    <nav class="hidden items-center gap-1 lg:flex" aria-label={t('nav_main_label')}>
+      {
+        NAV_ITEMS.map((item) => (
+          <a href={pathFor(lang, item.page)} class="nav-link" aria-current={item.page === page ? 'page' : undefined}>
+            {t(item.labelKey)}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex items-center gap-2 sm:gap-3">
+      <LanguageSwitcher lang={lang} page={switcherPage} class="hidden sm:inline-flex" />
+      <a href={quoteHref} class="btn btn-primary hidden !min-h-11 !px-5 !py-2.5 lg:inline-flex">{t('nav_quote')}</a>
+      <button
+        type="button"
+        data-menu-open
+        aria-haspopup="dialog"
+        aria-controls="mobile-menu"
+        aria-label={t('menu_open')}
+        class="grid size-11 place-items-center rounded-full border border-crema-logo/25 text-crema transition-colors duration-300 hover:border-rosa-brillo lg:hidden"
+      >
+        <Menu size={22} />
+      </button>
+    </div>
+  </div>
+</header>
+
+<MobileMenu lang={lang} page={page} />
+
+<style is:global>
+  #site-header[data-scrolled] {
+    background-color: color-mix(in srgb, var(--color-cacao) 82%, transparent);
+    border-color: color-mix(in srgb, var(--color-crema-logo) 12%, transparent);
+    backdrop-filter: blur(14px) saturate(1.3);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  }
+
+  .wm svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+</style>

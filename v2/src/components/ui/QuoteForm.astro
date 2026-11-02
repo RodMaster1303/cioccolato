@@ -1,0 +1,238 @@
+---
+import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
+import Michi from './Michi.astro';
+import { SITE, whatsappLink } from '../../data/site';
+import { useTranslations, type Lang, type UIKey } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const events = ['wedding', 'birthday', 'corporate', 'cocktail', 'cake', 'other'] as const;
+---
+
+<div id="cotizar" class="quote-wrap relative pt-2" data-lang={lang}>
+  <div class="peek-zombie pointer-events-none absolute bottom-[calc(100%-14px)] right-6 z-0 w-40 sm:w-52" aria-hidden="true">
+    <Michi michi="zombie" poses={['peek']} width={220} />
+  </div>
+
+  <form
+    id="quote-form"
+    class="card relative z-10 p-6 sm:p-10"
+    novalidate
+    data-template={t('quote_template')}
+    data-warn={t('q_date_warn')}
+    data-past={t('q_date_past')}
+    data-required={t('q_required')}
+    data-wa={whatsappLink()}
+  >
+    <h2 class="text-[clamp(1.6rem,3vw,2.2rem)]">{t('contact_form_title')}</h2>
+    <p class="mt-2 text-chocolate/75">{t('contact_form_text')}</p>
+
+    <div class="mt-8 grid gap-5 sm:grid-cols-2">
+      <div class="field sm:col-span-2">
+        <label for="q-event">{t('q_event')}</label>
+        <select id="q-event" name="event" required>
+          <option value="">{t('q_event_placeholder')}</option>
+          {events.map((event) => <option value={event}>{t(`q_event_${event}` as UIKey)}</option>)}
+        </select>
+        <p class="field-error" data-error-for="q-event" role="alert"></p>
+      </div>
+
+      <div class="field">
+        <label for="q-date">{t('q_date')}</label>
+        <input id="q-date" name="date" type="date" required aria-describedby="q-date-hint" />
+        <p id="q-date-hint" class="field-hint">{t('q_date_hint')}</p>
+        <p class="field-error" data-error-for="q-date" role="alert"></p>
+        <p class="field-warn" id="q-date-warn" role="status"></p>
+      </div>
+
+      <div class="field">
+        <label for="q-guests">{t('q_guests')}</label>
+        <input id="q-guests" name="guests" type="number" inputmode="numeric" min="1" max="5000" required />
+        <p class="field-error" data-error-for="q-guests" role="alert"></p>
+      </div>
+
+      <div class="field sm:col-span-2">
+        <label for="q-name">{t('q_name')}</label>
+        <input id="q-name" name="name" type="text" autocomplete="given-name" maxlength="60" />
+      </div>
+
+      <div class="field sm:col-span-2">
+        <label for="q-message">{t('q_message')}</label>
+        <textarea id="q-message" name="message" rows="4" maxlength="600"></textarea>
+      </div>
+    </div>
+
+    <div class="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+      <button type="submit" class="btn btn-primary">
+        {t('q_submit')}
+        <ArrowUpRight size={18} aria-hidden="true" />
+      </button>
+      <p class="text-sm text-chocolate/65">{t('q_note')}</p>
+    </div>
+    <noscript>
+      <p class="mt-4 text-sm"><a class="font-bold text-rosa-ink underline" href={whatsappLink()}>{SITE.phoneDisplay}</a></p>
+    </noscript>
+  </form>
+</div>
+
+<style is:global>
+  .field label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-chocolate);
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    min-height: 3.1rem;
+    padding: 0.7rem 1rem;
+    border-radius: 0.9rem;
+    border: 2px solid color-mix(in srgb, var(--color-chocolate) 18%, transparent);
+    background: var(--color-crema);
+    font: inherit;
+    color: var(--color-chocolate);
+    transition:
+      border-color 0.25s,
+      box-shadow 0.25s,
+      background-color 0.25s;
+  }
+
+  .field textarea {
+    resize: vertical;
+  }
+
+  .field input:hover,
+  .field select:hover,
+  .field textarea:hover {
+    border-color: color-mix(in srgb, var(--color-chocolate) 40%, transparent);
+  }
+
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    outline: none;
+    border-color: var(--color-rosa-ink);
+    background: #fff;
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-rosa-brillo) 28%, transparent);
+  }
+
+  .field [aria-invalid="true"] {
+    border-color: #b3261e;
+  }
+
+  .field-hint {
+    margin-top: 0.35rem;
+    font-size: 0.82rem;
+    color: color-mix(in srgb, var(--color-chocolate) 65%, transparent);
+  }
+
+  .field-error {
+    margin-top: 0.35rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #b3261e;
+  }
+
+  .field-warn {
+    margin-top: 0.35rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #8a4b00;
+  }
+
+  .peek-zombie {
+    transition: transform 0.7s var(--ease-spring);
+    animation: peek-bob 4.5s ease-in-out infinite;
+  }
+
+  .quote-wrap:focus-within .peek-zombie {
+    transform: translateY(58%);
+    animation: none;
+  }
+
+  @keyframes peek-bob {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(5px);
+    }
+  }
+</style>
+
+<script>
+  import { buildQuoteMessage, daysUntil } from '../../lib/quote';
+
+  const form = document.getElementById('quote-form') as HTMLFormElement | null;
+  if (form) {
+    const dateInput = form.elements.namedItem('date') as HTMLInputElement;
+    const warn = document.getElementById('q-date-warn') as HTMLElement;
+    const now = new Date();
+    const pad = (n: number) => String(n).padStart(2, '0');
+    dateInput.min = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+
+    const field = (name: string) => form.elements.namedItem(name) as HTMLInputElement;
+    const showError = (id: string, message: string) => {
+      const target = form.querySelector<HTMLElement>(`[data-error-for="${id}"]`);
+      if (target) target.textContent = message;
+      document.getElementById(id)?.setAttribute('aria-invalid', message ? 'true' : 'false');
+    };
+
+    dateInput.addEventListener('input', () => {
+      const days = daysUntil(dateInput.value);
+      warn.textContent = days !== null && days >= 0 && days < 3 ? form.dataset.warn ?? '' : '';
+      if (days !== null && days >= 0) showError('q-date', '');
+    });
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const select = field('event') as unknown as HTMLSelectElement;
+      const guests = field('guests');
+      let valid = true;
+      showError('q-event', select.value ? '' : form.dataset.required ?? '');
+      if (!select.value) valid = false;
+      const days = daysUntil(dateInput.value);
+      if (days === null) {
+        showError('q-date', form.dataset.required ?? '');
+        valid = false;
+      } else if (days < 0) {
+        showError('q-date', form.dataset.past ?? '');
+        valid = false;
+      } else {
+        showError('q-date', '');
+      }
+      const count = Number(guests.value);
+      if (!Number.isFinite(count) || count < 1) {
+        showError('q-guests', form.dataset.required ?? '');
+        valid = false;
+      } else {
+        showError('q-guests', '');
+      }
+      if (!valid) {
+        (form.querySelector('[aria-invalid="true"]') as HTMLElement | null)?.focus();
+        return;
+      }
+      const lang = document.documentElement.lang || 'es';
+      const [year, month, day] = dateInput.value.split('-').map(Number);
+      const readable = new Intl.DateTimeFormat(lang, { dateStyle: 'long', timeZone: 'UTC' }).format(new Date(Date.UTC(year, month - 1, day)));
+      const text = buildQuoteMessage(form.dataset.template ?? '', {
+        event: select.selectedOptions[0]?.textContent ?? '',
+        date: readable,
+        guests: String(count),
+        name: field('name').value,
+        message: (form.elements.namedItem('message') as HTMLTextAreaElement).value,
+      });
+      const url = `${form.dataset.wa}?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank', 'noopener');
+    });
+  }
+</script>

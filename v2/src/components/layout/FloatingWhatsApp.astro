@@ -1,0 +1,70 @@
+---
+import { Image } from 'astro:assets';
+import mark from '../../assets/brand/pivi-mark.webp';
+import BrandIcon from '../ui/BrandIcon.astro';
+import { whatsappLink } from '../../data/site';
+import { useTranslations, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<a
+  href={whatsappLink(t('whatsapp_default_message'))}
+  target="_blank"
+  rel="noopener"
+  aria-label={t('whatsapp_fab')}
+  class="fab group fixed bottom-4 right-4 z-40 flex items-center sm:bottom-6 sm:right-6"
+>
+  <span class="fab-label hidden rounded-full bg-crema px-4 py-2 text-sm font-bold text-chocolate shadow-lg sm:block">{t('whatsapp_fab')}</span>
+  <span class="fab-btn relative grid size-16 place-items-center rounded-full bg-cacao-2 ring-2 ring-rosa-brillo/70 transition-transform duration-500 ease-[var(--ease-spring)] group-hover:scale-110 group-hover:-rotate-6">
+    <Image src={mark} alt="" width={48} height={48} densities={[1, 2]} loading="lazy" class="size-12" />
+    <span class="absolute -bottom-1 -right-1 grid size-7 place-items-center rounded-full bg-whatsapp text-white ring-2 ring-cacao">
+      <BrandIcon name="whatsapp" size={15} />
+    </span>
+  </span>
+</a>
+
+<style>
+  .fab-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: color-mix(in srgb, var(--color-rosa-brillo) 55%, transparent);
+    pointer-events: none;
+    animation: fab-ring 2.6s ease-out infinite;
+  }
+
+  @keyframes fab-ring {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(1.56);
+    }
+  }
+
+  .fab-label {
+    margin-right: 0.75rem;
+    opacity: 0;
+    transform: translateX(12px);
+    pointer-events: none;
+    transition:
+      opacity 0.3s ease,
+      transform 0.4s var(--ease-out-expo);
+  }
+
+  .fab:hover .fab-label,
+  .fab:focus-visible .fab-label {
+    opacity: 1;
+    transform: none;
+  }
+</style>

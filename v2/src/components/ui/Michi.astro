@@ -1,0 +1,95 @@
+---
+import { Image } from 'astro:assets';
+import { sprite } from '../../lib/assets';
+
+interface Props {
+  michi: string;
+  poses: string[];
+  width: number;
+  alt?: string;
+  class?: string;
+  loading?: 'eager' | 'lazy';
+  bubble?: string;
+  interact?: 'meow' | 'wake' | 'none';
+  wakeTo?: string;
+}
+
+const { michi, poses, width, alt = '', class: className = '', loading = 'lazy', bubble, interact = 'none', wakeTo } = Astro.props;
+const first = sprite(`${michi}-${poses[0]}`);
+const ratio = `${first.width} / ${first.height}`;
+---
+
+<span
+  class:list={['michi relative inline-block align-bottom', className]}
+  data-michi={michi}
+  data-interact={interact}
+  data-wake={wakeTo}
+  style={`width:min(${width}px,100%);aspect-ratio:${ratio}`}
+>
+  {
+    poses.map((pose, index) => (
+      <Image
+        src={sprite(`${michi}-${pose}`)}
+        alt={index === 0 ? alt : ''}
+        width={width}
+        densities={[1, 2]}
+        loading={loading}
+        decoding="async"
+        class="sprite michi-pose absolute bottom-0 left-0 h-auto w-full"
+        data-pose={pose}
+        data-active={index === 0 ? '' : undefined}
+      />
+    ))
+  }
+  {bubble && <span class="michi-bubble" aria-hidden="true">{bubble}</span>}
+</span>
+
+<style is:global>
+  .michi-pose {
+    opacity: 0;
+    transition: opacity 0.12s linear;
+  }
+
+  .michi-pose[data-active] {
+    opacity: 1;
+  }
+
+  .michi[data-interact]:not([data-interact="none"]) {
+    cursor: pointer;
+  }
+
+  .michi-bubble {
+    position: absolute;
+    left: 50%;
+    top: -0.4rem;
+    z-index: 5;
+    translate: -50% 0;
+    padding: 0.3rem 0.8rem;
+    border-radius: 9999px;
+    background: var(--color-crema);
+    color: var(--color-chocolate);
+    font-size: 0.85rem;
+    font-weight: 800;
+    white-space: nowrap;
+    box-shadow: 0 6px 18px -6px rgb(0 0 0 / 0.55);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .michi-bubble::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    width: 10px;
+    height: 10px;
+    translate: -50% 0;
+    rotate: 45deg;
+    background: inherit;
+    border-radius: 2px;
+  }
+
+  .michi[data-talking] .michi-bubble {
+    animation: bubble-pop 1.4s ease forwards;
+  }
+</style>
