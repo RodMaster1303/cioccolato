@@ -32,7 +32,7 @@ Con el preloader y el hero ya aprobados, quedan ideas para seguir mejorando el s
 ### Operación
 
 13. **Retirar el sitio anterior** de la raíz del repositorio una vez estable el nuevo, en un commit aparte.
-14. **Proteger `main`** con Pull Request obligatorio (ADR 0007).
+14. **Proteger `main`** con Pull Request obligatorio, si algún día se quiere revisión antes de publicar (ADR 0011).
 
 ## Consecuencias
 

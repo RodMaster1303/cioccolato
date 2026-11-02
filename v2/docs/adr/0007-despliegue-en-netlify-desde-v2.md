@@ -1,6 +1,6 @@
 # 0007. Despliegue en Netlify desde `v2/`
 
-**Estado:** Aceptada (2026-11-01)
+**Estado:** Reemplazada por el [ADR 0011](0011-despliegue-desde-main-con-directorio-base-v2.md) (2026-11-02)
 
 ## Contexto
 
