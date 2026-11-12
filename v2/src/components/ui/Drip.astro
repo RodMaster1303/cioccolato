@@ -1,0 +1,64 @@
+---
+interface Props {
+  color: string;
+}
+
+const { color } = Astro.props;
+const DRIPS = [
+  [40, 26, 52],
+  [120, 18, 34],
+  [190, 34, 76],
+  [275, 20, 40],
+  [350, 28, 60],
+  [430, 16, 30],
+  [500, 30, 70],
+  [565, 20, 44],
+];
+const BASE = 14;
+const CORNER = 8;
+const path = [...DRIPS].reverse().reduce((d, [x, width, length]) => {
+  const r = width / 2;
+  return `${d}L${x + r + CORNER} ${BASE}Q${x + r} ${BASE} ${x + r} ${BASE + CORNER}V${length - r}A${r} ${r} 0 0 1 ${x - r} ${length - r}V${BASE + CORNER}Q${x - r} ${BASE} ${x - r - CORNER} ${BASE}`;
+}, `M600 0V${BASE}`);
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 80" width="600" height="80"><path fill="${color}" d="${path}L0 ${BASE}V0Z"/></svg>`;
+const image = `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+---
+
+<div class="drip" aria-hidden="true" data-reveal style={`--drip:${image}`}></div>
+
+<style is:global>
+  .drip {
+    position: absolute;
+    inset: -1px 0 auto;
+    z-index: 2;
+    height: 80px;
+    background: var(--drip) repeat-x left top / 600px 80px;
+    pointer-events: none;
+    transform-origin: top;
+  }
+
+  @media (max-width: 640px) {
+    .drip {
+      height: 56px;
+      background-size: 420px 56px;
+    }
+  }
+
+  .js .drip[data-reveal] {
+    opacity: 1;
+    transform: scaleY(0.2);
+  }
+
+  .js .drip[data-reveal].is-visible {
+    animation: drip-down 1.8s var(--ease-out-quart) both;
+  }
+
+  @keyframes drip-down {
+    from {
+      transform: scaleY(0.2);
+    }
+    to {
+      transform: scaleY(1);
+    }
+  }
+</style>

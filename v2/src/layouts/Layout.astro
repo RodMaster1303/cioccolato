@@ -80,57 +80,96 @@ const schemas = [bakerySchema(lang, site), ...jsonLd];
         } catch (error) {}
         if (reduce || (internal && !reload)) return;
         root.classList.add('intro-active');
-        var finished = false;
-        var finish = function () {
-          if (finished) return;
-          finished = true;
+        var LOGO = 1250;
+        var CAST = 1560;
+        var PATIENCE = 1800;
+        var CLOSE = 900;
+        var phase = 0;
+        var timer = 0;
+        var later = function (task, ms) {
+          clearTimeout(timer);
+          timer = setTimeout(task, ms);
+        };
+        var fly = function () {
+          var trio = document.querySelector('[data-hero-trio]');
+          if (!trio || !Element.prototype.animate) return;
+          var slots = document.querySelectorAll('#preloader .pl-slot');
+          var moved = 0;
+          for (var index = 0; index < slots.length; index++) {
+            var slot = slots[index];
+            var target = trio.querySelector('.cat[data-cat="' + slot.getAttribute('data-cat') + '"]');
+            if (!target) continue;
+            var from = slot.getBoundingClientRect();
+            var to = target.getBoundingClientRect();
+            if (!from.width || !to.width) continue;
+            var dx = to.left - from.left;
+            var dy = to.top - from.top;
+            var scale = to.width / from.width;
+            var lift = Math.min(90, 30 + Math.abs(dx) * 0.12);
+            slot.animate(
+              [
+                { transformOrigin: '0 0', transform: 'translate(0px, 0px) scale(1)' },
+                { transformOrigin: '0 0', transform: 'translate(' + dx * 0.5 + 'px,' + (dy * 0.5 - lift) + 'px) scale(' + (1 + scale) / 2 + ')', offset: 0.5 },
+                { transformOrigin: '0 0', transform: 'translate(' + dx + 'px,' + dy + 'px) scale(' + scale + ')' },
+              ],
+              { duration: 760, delay: index * 45, easing: 'cubic-bezier(0.6, 0, 0.25, 1)', fill: 'forwards' },
+            );
+            moved += 1;
+          }
+          if (moved) root.classList.add('intro-handoff');
+        };
+        var close = function (handoff) {
+          if (phase === 3) return;
+          phase = 3;
+          clearTimeout(timer);
+          if (handoff) fly();
           root.classList.remove('intro-active');
           root.classList.add('intro-closing');
           setTimeout(function () {
             root.classList.remove('intro-closing');
-          }, 1000);
+            root.classList.remove('intro-handoff');
+            window.dispatchEvent(new Event('intro:done'));
+          }, CLOSE);
+        };
+        var ready = function () {
+          var images = document.querySelectorAll('#preloader .cat-pose');
+          if (!images.length) return false;
+          for (var index = 0; index < images.length; index++) {
+            if (!images[index].complete || !images[index].naturalWidth) return false;
+          }
+          return true;
+        };
+        var cast = function () {
+          if (phase !== 1) return;
+          phase = 2;
+          root.classList.add('intro-cast');
+          later(function () {
+            close(true);
+          }, CAST);
+        };
+        var afterLogo = function () {
+          var deadline = Date.now() + PATIENCE;
+          var poll = function () {
+            if (phase !== 1) return;
+            if (ready()) return cast();
+            if (Date.now() > deadline) return close(false);
+            later(poll, 80);
+          };
+          poll();
+        };
+        var start = function () {
+          if (phase !== 0) return;
+          phase = 1;
+          root.classList.add('intro-run');
+          later(afterLogo, LOGO);
         };
         var skip = function () {
           root.classList.add('intro-skip');
-          finish();
+          close(false);
         };
-        var start = function () {
-          var begun = false;
-          var begin = function () {
-            if (begun) return;
-            begun = true;
-            root.classList.add('intro-run');
-            setTimeout(finish, 3400);
-          };
-          var wait = function () {
-            var pending = [].filter.call(document.querySelectorAll('#preloader img'), function (image) {
-              return !image.complete;
-            });
-            if (!pending.length) return begin();
-            var left = pending.length;
-            var done = function () {
-              left -= 1;
-              if (left === 0) begin();
-            };
-            pending.forEach(function (image) {
-              image.addEventListener('load', done);
-              image.addEventListener('error', done);
-            });
-          };
-          setTimeout(begin, 2000);
-          if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wait);
-          else wait();
-        };
-        if (document.visibilityState === 'hidden') {
-          var onVisible = function () {
-            if (document.visibilityState !== 'visible') return;
-            document.removeEventListener('visibilitychange', onVisible);
-            start();
-          };
-          document.addEventListener('visibilitychange', onVisible);
-        } else {
-          start();
-        }
+        requestAnimationFrame(function () {
+          requestAnimationFrame(start);
+        });
         document.addEventListener('keydown', function (event) {
           if (event.key === 'Escape') skip();
         });
@@ -193,6 +232,7 @@ const schemas = [bakerySchema(lang, site), ...jsonLd];
     top: -10px;
     left: calc((100% - 26px) * var(--progress));
     width: 26px;
+    opacity: clamp(0, calc(var(--progress) * 60), 1);
     transform: rotate(calc(var(--progress) * 2880deg));
     filter: drop-shadow(0 0 6px color-mix(in srgb, var(--color-rosa-brillo) 70%, transparent));
   }

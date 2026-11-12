@@ -12,8 +12,8 @@ const SIZES = '(min-width: 1024px) 256px, 232px';
 ---
 
 <div class="trio-portrait relative aspect-[1600/1498] w-full" role="img" aria-label={alt}>
-  <Image src={sweets} alt="" widths={[320, 480, 640]} sizes={SIZES} quality={70} loading="lazy" class="trio-layer trio-sweets" />
-  <Image src={cats} alt="" widths={[320, 480, 640]} sizes={SIZES} quality={74} loading="lazy" class="trio-layer trio-cats" />
+  <Image src={sweets} alt="" widths={[320, 480, 640]} sizes={SIZES} quality={70} loading="eager" class="trio-layer trio-sweets" />
+  <Image src={cats} alt="" widths={[320, 480, 640]} sizes={SIZES} quality={74} loading="eager" fetchpriority="high" class="trio-layer trio-cats" />
 </div>
 
 <style is:global>

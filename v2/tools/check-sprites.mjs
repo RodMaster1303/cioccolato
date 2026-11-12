@@ -8,7 +8,7 @@ const OBJECTS = [
   'cake-rainbow', 'cake-strawberry', 'croissant', 'cupcake-green', 'cupcake-pink', 'cupcake-yellow',
   'donut', 'macaron-blue', 'macaron-pink', 'yarn-cyan', 'yarn-orange', 'yarn-pink',
 ];
-const EXTRAS = ['trio-gatos', 'trio-postres', 'real-pivi', 'real-mandarino', 'real-zombie'];
+const EXTRAS = ['trio-gatos', 'trio-postres', 'trio-completo', 'pivi-mark', 'real-pivi', 'real-mandarino', 'real-zombie'];
 
 const walk = (dir) => readdirSync(dir).flatMap((name) => {
   const path = join(dir, name);

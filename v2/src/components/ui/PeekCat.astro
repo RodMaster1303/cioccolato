@@ -19,6 +19,10 @@ const { michi, beat = '0s', class: className = '' } = Astro.props;
     animation: peek-sway 5.2s ease-in-out var(--beat) infinite;
   }
 
+  .peek-cat .michi {
+    translate: 0 8.5%;
+  }
+
   @keyframes peek-sway {
     0%,
     100% {

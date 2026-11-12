@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import { sprite } from '../../lib/assets';
+import { catPose, sprite } from '../../lib/assets';
 
 interface Props {
   michi: string;
@@ -12,11 +12,14 @@ interface Props {
   bubble?: string;
   interact?: 'meow' | 'wake' | 'none';
   wakeTo?: string;
+  routine?: boolean;
+  sizes?: string;
 }
 
-const { michi, poses, width, alt = '', class: className = '', loading = 'lazy', bubble, interact = 'none', wakeTo } = Astro.props;
+const { michi, poses, width, alt = '', class: className = '', loading = 'lazy', bubble, interact = 'none', wakeTo, routine = false, sizes } = Astro.props;
+const normalized = poses.length > 1;
 const first = sprite(`${michi}-${poses[0]}`);
-const ratio = `${first.width} / ${first.height}`;
+const ratio = normalized ? '1 / 1' : `${first.width} / ${first.height}`;
 ---
 
 <span
@@ -24,22 +27,41 @@ const ratio = `${first.width} / ${first.height}`;
   data-michi={michi}
   data-interact={interact}
   data-wake={wakeTo}
+  data-norm={normalized ? '' : undefined}
+  data-routine={routine ? '' : undefined}
   style={`width:min(${width}px,100%);aspect-ratio:${ratio}`}
 >
   {
-    poses.map((pose, index) => (
-      <Image
-        src={sprite(`${michi}-${pose}`)}
-        alt={index === 0 ? alt : ''}
-        width={width}
-        densities={[1, 2]}
-        loading={loading}
-        decoding="async"
-        class="sprite michi-pose absolute bottom-0 left-0 h-auto w-full"
-        data-pose={pose}
-        data-active={index === 0 ? '' : undefined}
-      />
-    ))
+    poses.map((pose, index) =>
+      normalized ? (
+        <Image
+          src={catPose(`${michi}-${pose}`)}
+          alt={index === 0 ? alt : ''}
+          widths={[240, 360, 540, 720]}
+          sizes={sizes ?? `(max-width: 640px) 70vw, ${Math.round(width * 1.16)}px`}
+          quality={66}
+          loading={index === 0 ? loading : 'lazy'}
+          fetchpriority={index === 0 && loading === 'eager' ? 'high' : undefined}
+          decoding="async"
+          class="sprite michi-pose absolute inset-0 size-full"
+          data-pose={pose}
+          data-active={index === 0 ? '' : undefined}
+        />
+      ) : (
+        <Image
+          src={sprite(`${michi}-${pose}`)}
+          alt={index === 0 ? alt : ''}
+          width={width}
+          densities={[1, 2]}
+          loading={index === 0 ? loading : 'lazy'}
+          fetchpriority={index === 0 && loading === 'eager' ? 'high' : undefined}
+          decoding="async"
+          class="sprite michi-pose absolute bottom-0 left-0 h-auto w-full"
+          data-pose={pose}
+          data-active={index === 0 ? '' : undefined}
+        />
+      ),
+    )
   }
   {bubble && <span class="michi-bubble" aria-hidden="true">{bubble}</span>}
 </span>
@@ -52,6 +74,11 @@ const ratio = `${first.width} / ${first.height}`;
 
   .michi-pose[data-active] {
     opacity: 1;
+  }
+
+  .michi[data-norm] .michi-pose {
+    transform: translateY(7%) scale(1.163);
+    transform-origin: 50% 100%;
   }
 
   .michi[data-interact]:not([data-interact="none"]) {

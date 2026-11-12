@@ -1,4 +1,7 @@
 ---
+import Drip from './Drip.astro';
+import Words from './Words.astro';
+
 interface Props {
   eyebrow?: string;
   title: string;
@@ -14,12 +17,15 @@ const { eyebrow, title, text } = Astro.props;
   <div class="pointer-events-none absolute -left-24 bottom-0 -z-10 size-[20rem] rounded-full bg-naranja/15 blur-[100px]"></div>
   <div class="container-site relative grid items-center gap-8 md:grid-cols-[1.3fr_0.7fr]">
     <div>
-      {eyebrow && <p class="eyebrow">{eyebrow}</p>}
-      <h1 class="mt-4 text-[clamp(2.3rem,5.6vw,4.2rem)] font-semibold leading-[1.04]">{title}</h1>
-      {text && <p class="lead mt-5 max-w-xl">{text}</p>}
+      {eyebrow && <p class="eyebrow" data-enter style="--i:0">{eyebrow}</p>}
+      <h1 class="words mt-4 text-[clamp(2.3rem,5.6vw,4.2rem)] font-semibold leading-[1.04]" data-enter style="--i:0"><Words text={title} /></h1>
+      {text && <p class="lead mt-5 max-w-xl" data-enter style="--i:3">{text}</p>}
     </div>
-    <div class="relative hidden w-[14.5rem] justify-self-end md:block lg:w-[16rem]">
+    <div class="page-art relative -mb-4 w-[9.5rem] justify-self-end md:mb-0 md:w-[14.5rem] lg:w-[16rem]" data-enter style="--i:4">
       <slot name="art" />
     </div>
   </div>
 </section>
+<div class="relative z-[1] h-0">
+  <Drip color="#140a0f" />
+</div>

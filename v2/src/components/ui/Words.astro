@@ -1,0 +1,19 @@
+---
+interface Props {
+  text: string;
+  start?: number;
+}
+
+const { text, start = 0 } = Astro.props;
+const words = text.split(/\s+/).filter(Boolean);
+---
+
+{
+  words.map((word, index) => (
+    <>
+      <span class="word">
+        <span style={`--w:${start + index}`}>{word}</span>
+      </span>{index < words.length - 1 ? ' ' : ''}
+    </>
+  ))
+}

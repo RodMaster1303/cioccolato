@@ -17,7 +17,7 @@ const other = LANGS.find((code) => code !== lang) ?? DEFAULT_LANG;
   href={pathFor(other, page)}
   hreflang={other}
   lang={other}
-  aria-label={`${t('language_label')}: ${other === 'es' ? 'Español' : 'English'}`}
+  aria-label={`${other.toUpperCase()}, ${t('language_label')}: ${other === 'es' ? 'Español' : 'English'}`}
   class:list={[
     'inline-flex h-11 items-center gap-1.5 rounded-full border border-crema-logo/25 px-3.5 text-sm font-bold text-crema transition-colors duration-300 hover:border-rosa-brillo hover:text-rosa-brillo',
     className,

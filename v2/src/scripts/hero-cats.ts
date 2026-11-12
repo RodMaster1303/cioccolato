@@ -209,13 +209,24 @@ function start(trio: HTMLElement, hero: HTMLElement): void {
     }, random(2300, 5600));
   }
 
+  let wanderQueue: { cat: HeroCat; look: Look }[] = [];
+
   function wander(): void {
     window.setTimeout(wander, random(3000, 6500));
     if (!visible || document.hidden || sleeping) return;
     if (performance.now() - lastMove < 3500 || performance.now() < holdUntil) return;
-    const cat = cats[Math.floor(Math.random() * cats.length)];
+    if (!wanderQueue.length) {
+      wanderQueue = cats.flatMap((cat) => WANDER_LOOKS.map((look) => ({ cat, look }))).sort(() => Math.random() - 0.5);
+    }
+    const next = wanderQueue[wanderQueue.length - 1];
+    const cat = next.cat;
     if (cat.override) return;
-    cat.gaze = WANDER_LOOKS[Math.floor(Math.random() * WANDER_LOOKS.length)];
+    if (Math.random() < 0.2) {
+      meow(cat);
+      return;
+    }
+    wanderQueue.pop();
+    cat.gaze = next.look;
     render(cat);
     window.setTimeout(() => {
       cat.gaze = 'sit';
@@ -321,7 +332,9 @@ function start(trio: HTMLElement, hero: HTMLElement): void {
 
   cats.forEach((cat) => {
     cat.el.addEventListener('pointerdown', () => meow(cat));
-    scheduleBlink(cat);
+    cat.el.addEventListener('animationend', (event) => {
+      if (event.animationName === 'hero-hop') cat.el.removeAttribute('data-hop');
+    });
   });
 
   trio.querySelectorAll<HTMLElement>('[data-sweet]').forEach((sweet) => {
@@ -357,16 +370,24 @@ function start(trio: HTMLElement, hero: HTMLElement): void {
     { threshold: 0.2 },
   ).observe(trio);
 
-  idleTimer = window.setTimeout(fallAsleep, SLEEP_AFTER);
-  window.setTimeout(wander, random(3000, 5000));
+  const live = (landed: boolean): void => {
+    cats.forEach((cat, index) => {
+      scheduleBlink(cat);
+      if (landed) window.setTimeout(() => restart(cat.el, 'data-hop'), index * 70);
+    });
+    if (landed) {
+      trio.querySelectorAll<HTMLElement>('[data-sweet]').forEach((sweet, index) => {
+        window.setTimeout(() => restart(sweet, 'data-pop'), 140 + index * 60);
+      });
+    }
+    idleTimer = window.setTimeout(fallAsleep, SLEEP_AFTER);
+    window.setTimeout(wander, random(3000, 5000));
+    window.setTimeout(greet, landed ? 650 : 1500);
+  };
 
-  if (html.classList.contains('intro-active')) {
-    new MutationObserver((_records, observer) => {
-      if (html.classList.contains('intro-active')) return;
-      observer.disconnect();
-      window.setTimeout(greet, 700);
-    }).observe(html, { attributes: true, attributeFilter: ['class'] });
+  if (html.classList.contains('intro-active') || html.classList.contains('intro-closing')) {
+    window.addEventListener('intro:done', () => live(true), { once: true });
   } else {
-    window.setTimeout(greet, 1500);
+    live(false);
   }
 }

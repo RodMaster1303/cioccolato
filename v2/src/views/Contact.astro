@@ -44,7 +44,7 @@ const socials = [
   jsonLd={[faqSchema(lang, FAQ_ITEMS)]}
 >
   <PageHeader title={t('page_title_contact')} text={t('contact_page_text')}>
-    <Michi slot="art" michi="pivi" poses={['look-up', 'meow']} width={230} interact="meow" bubble={t('michi_meow')} />
+    <Michi slot="art" michi="pivi" poses={['look-up', 'meow']} width={230} interact="meow" loading="eager" sizes="(max-width: 768px) 180px, 300px" bubble={t('michi_meow')} />
   </PageHeader>
 
   <section class="section pt-20 sm:pt-28">
@@ -128,5 +128,5 @@ const socials = [
     </div>
   </section>
 
-  <CtaBand lang={lang} />
+  <CtaBand lang={lang} michi="zombie" pose="crouch" />
 </Layout>

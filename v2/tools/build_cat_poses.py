@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SOURCE = ROOT / 'src' / 'assets' / 'michis'
 TARGET = ROOT / 'src' / 'assets' / 'cats'
 CATS = ('pivi', 'mandarino', 'zombie')
-POSES = ('sit', 'blink', 'look-left', 'look-right', 'look-up', 'meow', 'sleep', 'swipe', 'crouch', 'pounce')
+POSES = ('sit', 'blink', 'look-left', 'look-right', 'look-up', 'meow', 'sleep', 'swipe', 'crouch', 'pounce', 'walk')
 CANVAS = 808
 BODY_FRACTION = 0.35
 

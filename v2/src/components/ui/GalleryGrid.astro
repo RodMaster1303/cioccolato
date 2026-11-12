@@ -45,7 +45,7 @@ const items = await Promise.all(
 <ul class="gallery-cols">
   {
     items.map((item, index) => (
-      <li class="gallery-item" data-category={item.category} data-reveal style={`--d:${index % 3}`}>
+      <li class="gallery-item" data-category={item.category} data-reveal style={`--d:${index % 3}${filters ? `;view-transition-name:photo-${index}` : ''}`}>
         <button
           type="button"
           data-lightbox
@@ -58,7 +58,7 @@ const items = await Promise.all(
             src={item.meta}
             alt=""
             widths={[360, 560, 800]}
-            sizes="(min-width: 1024px) 360px, (min-width: 640px) 45vw, 92vw"
+            sizes="(min-width: 1024px) 360px, 46vw"
             loading="lazy"
             decoding="async"
             class="h-auto w-full transition-transform duration-[900ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.06]"
@@ -174,6 +174,35 @@ const items = await Promise.all(
     animation: lb-in 0.35s var(--ease-out-expo);
   }
 
+  #lightbox-img.is-swap {
+    animation: lb-swap 0.42s var(--ease-out-expo);
+  }
+
+  @keyframes lb-swap {
+    from {
+      opacity: 0;
+      transform: translateX(calc(var(--dir, 0) * 40px)) scale(0.97);
+    }
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .gallery-item img {
+        animation: photo-drift linear both;
+        animation-timeline: view();
+      }
+    }
+  }
+
+  @keyframes photo-drift {
+    from {
+      transform: scale(1.12) translateY(-3.5%);
+    }
+    to {
+      transform: scale(1.12) translateY(3.5%);
+    }
+  }
+
   @keyframes lb-in {
     from {
       opacity: 0;
@@ -191,6 +220,10 @@ const items = await Promise.all(
     let index = 0;
 
     const show = (next: number) => {
+      image.style.setProperty('--dir', String(Math.sign(next - index)));
+      image.classList.remove('is-swap');
+      void image.offsetWidth;
+      image.classList.add('is-swap');
       index = (next + triggers.length) % triggers.length;
       const trigger = triggers[index];
       image.src = trigger.dataset.full ?? '';
@@ -207,7 +240,8 @@ const items = await Promise.all(
       const trigger = target.closest<HTMLElement>('[data-lightbox]');
       if (trigger) {
         triggers = [...document.querySelectorAll<HTMLElement>('[data-lightbox]')].filter((element) => !element.closest('[hidden]'));
-        show(triggers.indexOf(trigger));
+        index = triggers.indexOf(trigger);
+        show(index);
         dialog.showModal();
         return;
       }
@@ -235,10 +269,16 @@ const items = await Promise.all(
   chips.forEach((chip) => {
     chip.addEventListener('click', () => {
       const value = chip.dataset.filter;
-      chips.forEach((other) => other.setAttribute('aria-pressed', String(other === chip)));
-      document.querySelectorAll<HTMLElement>('.gallery-item').forEach((item) => {
-        item.toggleAttribute('hidden', value !== 'all' && item.dataset.category !== value);
-      });
+      const apply = (): void => {
+        chips.forEach((other) => other.setAttribute('aria-pressed', String(other === chip)));
+        document.querySelectorAll<HTMLElement>('.gallery-item').forEach((item) => {
+          item.classList.add('is-visible');
+          item.toggleAttribute('hidden', value !== 'all' && item.dataset.category !== value);
+        });
+      };
+      const animated = 'startViewTransition' in document && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (animated) (document as Document & { startViewTransition: (update: () => void) => unknown }).startViewTransition(apply);
+      else apply();
     });
   });
 </script>

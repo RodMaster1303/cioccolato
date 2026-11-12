@@ -1,4 +1,6 @@
 ---
+import Drip from '../ui/Drip.astro';
+import Words from '../ui/Words.astro';
 import { Image } from 'astro:assets';
 import { sprite } from '../../lib/assets';
 import { HOW_STEPS } from '../../data/content';
@@ -14,10 +16,11 @@ const icons = ['obj-cupcake-yellow', 'obj-macaron-pink', 'obj-croissant', 'obj-c
 ---
 
 <section class="section" aria-labelledby="how-title">
+  <Drip color="#140a0f" />
   <div class="container-site">
     <div class="mx-auto max-w-2xl text-center" data-reveal>
       <p class="eyebrow">{t('how_eyebrow')}</p>
-      <h2 id="how-title" class="display-title mt-4">{t('how_title')}</h2>
+      <h2 id="how-title" class="words display-title mt-4" data-reveal><Words text={t('how_title')} /></h2>
     </div>
 
     <ol class="how-steps relative mt-16 grid gap-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">

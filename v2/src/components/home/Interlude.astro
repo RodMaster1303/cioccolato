@@ -1,7 +1,10 @@
 ---
 import { Image } from 'astro:assets';
 import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
-import { sprite } from '../../lib/assets';
+import Words from '../ui/Words.astro';
+import Drip from '../ui/Drip.astro';
+import { catPose, sprite } from '../../lib/assets';
+import { MICHIS } from '../../data/content';
 import { whatsappLink } from '../../data/site';
 import { useTranslations, type Lang } from '../../i18n';
 
@@ -11,17 +14,24 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const poses = ['look-up', 'crouch', 'pounce', 'walk', 'swipe', 'sleep'] as const;
+const POSES = ['look-up', 'crouch', 'pounce', 'walk', 'swipe', 'sleep'] as const;
+const actors = [
+  { id: 'pivi', ball: 'obj-yarn-pink', color: 'var(--color-rosa-brillo)' },
+  { id: 'mandarino', ball: 'obj-yarn-orange', color: 'var(--color-naranja)' },
+  { id: 'zombie', ball: 'obj-yarn-cyan', color: 'var(--color-cian)' },
+] as const;
 const pops = [
-  { name: 'obj-cupcake-pink', x: '40%', y: '18%', w: '4.2rem' },
-  { name: 'obj-macaron-blue', x: '58%', y: '2%', w: '4.6rem' },
-  { name: 'obj-donut', x: '72%', y: '30%', w: '4.6rem' },
-  { name: 'obj-croissant', x: '86%', y: '10%', w: '5rem' },
-  { name: 'obj-cake-strawberry', x: '8%', y: '58%', w: '4.4rem' },
+  { name: 'obj-cupcake-pink', x: '36%', y: '14%', w: '4.2rem' },
+  { name: 'obj-macaron-blue', x: '56%', y: '0%', w: '4.4rem' },
+  { name: 'obj-donut', x: '70%', y: '24%', w: '4.4rem' },
+  { name: 'obj-croissant', x: '86%', y: '6%', w: '4.8rem' },
+  { name: 'obj-cake-strawberry', x: '6%', y: '30%', w: '4.4rem', left: true },
+  { name: 'obj-cupcake-yellow', x: '27%', y: '10%', w: '3.8rem', left: true },
 ];
 ---
 
 <section class="interlude" data-interlude aria-labelledby="interlude-title">
+  <Drip color="#fbebd6" />
   <div class="interlude-sticky">
     <div class="stars"></div>
     <div class="pointer-events-none absolute left-1/2 top-[38%] size-[34rem] max-w-[90vw] -translate-x-1/2 rounded-full bg-rosa/20 blur-[110px]"></div>
@@ -29,11 +39,20 @@ const pops = [
     <div class="container-site relative z-10 pt-24 sm:pt-28">
       <div class="il-copy il-copy-intro max-w-xl">
         <p class="eyebrow">{t('interlude_eyebrow')}</p>
-        <h2 id="interlude-title" class="display-title mt-4">{t('interlude_title')}</h2>
+        <h2 id="interlude-title" class="words display-title mt-4" data-reveal><Words text={t('interlude_title')} /></h2>
         <p class="lead mt-4">{t('interlude_text')}</p>
+        <p class="il-turns" aria-hidden="true">
+          {
+            MICHIS.map((michi) => (
+              <span class="il-turn" data-cat={michi.id} style={`--accent:${michi.accent}`}>
+                {t('interlude_turn', { name: michi.name })}
+              </span>
+            ))
+          }
+        </p>
       </div>
-      <div class="il-copy il-copy-end max-w-xl" aria-live="polite">
-        <h2 class="display-title">{t('interlude_end_title')}</h2>
+      <div class="il-copy il-copy-end max-w-xl">
+        <p class="display-title font-display font-semibold leading-[1.1] text-crema">{t('interlude_end_title')}</p>
         <p class="lead mt-4">{t('interlude_end_text')}</p>
         <a href={whatsappLink(t('whatsapp_default_message'))} target="_blank" rel="noopener" class="btn btn-primary mt-6">
           {t('interlude_cta')}
@@ -43,8 +62,17 @@ const pops = [
     </div>
 
     <div class="il-stage" aria-hidden="true">
-      <svg class="il-thread" preserveAspectRatio="none"><path d="" fill="none" /></svg>
-      <span class="il-hook"></span>
+      <svg class="il-threads" preserveAspectRatio="none">
+        {
+          actors.map((actor) => (
+            <g data-thread={actor.id} style={`color:${actor.color}`}>
+              <path class="il-thread-glow" d="" fill="none" />
+              <path class="il-thread-line" d="" fill="none" />
+            </g>
+          ))
+        }
+      </svg>
+      {actors.map((actor) => <span class="il-hook" data-hook={actor.id} />)}
       <div class="il-floor"></div>
       {
         pops.map((pop, index) => (
@@ -55,29 +83,38 @@ const pops = [
             densities={[1, 2]}
             loading="lazy"
             class="sprite il-pop"
+            data-left={'left' in pop ? '' : undefined}
             style={`--x:${pop.x};--y:${pop.y};--w:${pop.w};--i:${index}`}
           />
         ))
       }
-      <div class="il-pivi">
-        {
-          poses.map((pose) => (
-            <Image
-              src={sprite(`pivi-${pose}`)}
-              alt=""
-              width={320}
-              densities={[1, 2]}
-              loading="lazy"
-              class="sprite il-pose"
-              data-pose={pose}
-              data-active={pose === 'sleep' ? '' : undefined}
-            />
-          ))
-        }
-      </div>
-      <div class="il-ball">
-        <Image src={sprite('obj-yarn-pink')} alt="" width={90} densities={[1, 2]} loading="lazy" class="sprite size-full object-contain" />
-      </div>
+      {
+        actors.map((actor) => (
+          <div class="il-cat" data-actor={actor.id}>
+            {POSES.map((pose) => (
+              <Image
+                src={catPose(`${actor.id}-${pose}`)}
+                alt=""
+                widths={[240, 360, 540]}
+                sizes="(min-width: 640px) 270px, 36vw"
+                quality={66}
+                loading="lazy"
+                class="sprite il-pose"
+                data-pose={pose}
+                data-active={pose === 'sleep' ? '' : undefined}
+              />
+            ))}
+            <span class="il-zzz"><i>z</i><i>z</i><i>Z</i></span>
+          </div>
+        ))
+      }
+      {
+        actors.map((actor) => (
+          <div class="il-ball" data-ball={actor.id}>
+            <Image src={sprite(actor.ball)} alt="" width={90} densities={[1, 2]} loading="lazy" class="sprite size-full object-contain" />
+          </div>
+        ))
+      }
     </div>
   </div>
 </section>
@@ -85,12 +122,13 @@ const pops = [
 <style is:global>
   .interlude {
     position: relative;
-    height: 340svh;
+    height: 400svh;
     background: var(--color-cacao);
     color: var(--color-crema-logo);
   }
 
-  .interlude[data-static] {
+  .interlude[data-static],
+  .interlude:not([data-js]) {
     height: auto;
   }
 
@@ -101,15 +139,16 @@ const pops = [
     overflow: hidden;
   }
 
-  .interlude[data-static] .interlude-sticky {
+  .interlude[data-static] .interlude-sticky,
+  .interlude:not([data-js]) .interlude-sticky {
     position: relative;
-    height: min(100svh, 46rem);
+    height: clamp(30rem, 100svh, 46rem);
   }
 
   .il-copy {
     transition:
-      opacity 0.6s ease,
-      transform 0.7s var(--ease-out-expo);
+      opacity 0.35s ease,
+      translate 0.6s var(--ease-out-expo);
   }
 
   .il-copy-end {
@@ -118,7 +157,7 @@ const pops = [
     right: 1.25rem;
     top: 6rem;
     opacity: 0;
-    transform: translateY(20px);
+    translate: 0 20px;
     pointer-events: none;
   }
 
@@ -126,6 +165,7 @@ const pops = [
     .il-copy-end {
       left: 2rem;
       right: auto;
+      top: 7rem;
     }
   }
 
@@ -137,59 +177,110 @@ const pops = [
 
   .interlude[data-end] .il-copy-intro {
     opacity: 0;
-    transform: translateY(-16px);
+    translate: 0 -16px;
   }
 
   .interlude[data-end] .il-copy-end {
     opacity: 1;
-    transform: none;
+    translate: 0 0;
     pointer-events: auto;
+    transition-delay: 0.32s;
+  }
+
+  .il-turns {
+    position: relative;
+    height: 2.2rem;
+    margin-top: 1rem;
+  }
+
+  .il-turn {
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 0.3rem 0.9rem;
+    border-radius: 9999px;
+    background: var(--accent);
+    color: var(--color-cacao);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    opacity: 0;
+    translate: 0 10px;
+    transition:
+      opacity 0.3s ease,
+      translate 0.5s var(--ease-spring);
+  }
+
+  .interlude[data-turn="pivi"] .il-turn[data-cat="pivi"],
+  .interlude[data-turn="mandarino"] .il-turn[data-cat="mandarino"],
+  .interlude[data-turn="zombie"] .il-turn[data-cat="zombie"] {
+    opacity: 1;
+    translate: 0 0;
   }
 
   .il-stage {
     position: absolute;
     inset: auto 0 5rem 0;
-    height: min(58svh, 36rem);
+    height: min(56svh, 36rem);
   }
 
   @media (min-width: 640px) {
     .il-stage {
       bottom: 1.5rem;
-      height: min(64svh, 36rem);
+      height: min(62svh, 36rem);
     }
   }
 
-  .il-thread {
+  .il-threads {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     overflow: visible;
+    transition: opacity 0.7s ease;
+    will-change: transform;
   }
 
-  .il-thread path {
-    stroke: var(--color-rosa-brillo);
-    stroke-width: 3;
+  .interlude[data-end] .il-threads {
+    opacity: 0.4;
+  }
+
+  .il-thread-glow {
+    stroke: currentColor;
+    stroke-opacity: 0.22;
+    stroke-width: 9;
     stroke-linecap: round;
-    filter: drop-shadow(0 0 6px color-mix(in srgb, var(--color-rosa-brillo) 80%, transparent));
+  }
+
+  .il-thread-line {
+    stroke: currentColor;
+    stroke-width: 2.6;
+    stroke-linecap: round;
   }
 
   .il-hook {
     position: absolute;
-    left: 10%;
-    top: 3%;
-    width: 14px;
-    height: 14px;
-    margin: -7px 0 0 -7px;
+    left: 0;
+    top: 0;
+    width: 12px;
+    height: 12px;
+    margin: -6px 0 0 -6px;
     border-radius: 50%;
     background: var(--color-ambar);
-    box-shadow: 0 0 18px var(--color-ambar);
+    box-shadow: 0 0 14px var(--color-ambar);
+    opacity: 0;
+  }
+
+  .interlude[data-js] .il-hook {
+    opacity: 1;
   }
 
   .il-floor {
     position: absolute;
-    left: 5%;
-    right: 5%;
+    left: 4%;
+    right: 4%;
     bottom: 0;
     height: 2px;
     background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-crema-logo) 40%, transparent), transparent);
@@ -199,31 +290,87 @@ const pops = [
     position: absolute;
     left: 0;
     top: 0;
+    z-index: 4;
     width: 3.2rem;
     height: 3.2rem;
-    will-change: transform;
   }
 
-  .il-pivi {
+  .il-cat {
     position: absolute;
     left: 0;
     top: 0;
-    width: 15rem;
-    height: 11rem;
-    will-change: transform;
+    z-index: 2;
+    width: 14rem;
+    aspect-ratio: 1;
+  }
+
+  .il-cat[data-running] {
+    z-index: 3;
   }
 
   .il-pose {
     position: absolute;
-    left: 0;
-    bottom: 0;
+    inset: 0;
     width: 100%;
-    height: auto;
+    height: 100%;
     opacity: 0;
   }
 
   .il-pose[data-active] {
     opacity: 1;
+  }
+
+  .il-cat[data-flip] .il-pose {
+    scale: -1 1;
+  }
+
+  .il-zzz {
+    position: absolute;
+    left: 62%;
+    top: 46%;
+    display: none;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--color-crema-logo);
+    text-shadow: 0 0 10px color-mix(in srgb, var(--color-cian) 70%, transparent);
+  }
+
+  .il-cat[data-asleep] .il-zzz {
+    display: block;
+  }
+
+  .il-zzz i {
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-style: normal;
+    font-size: 0.95rem;
+    opacity: 0;
+    animation: il-zzz 3.2s ease-in-out infinite;
+  }
+
+  .il-zzz i:nth-child(2) {
+    font-size: 1.2rem;
+    animation-delay: 1.05s;
+  }
+
+  .il-zzz i:nth-child(3) {
+    font-size: 1.5rem;
+    animation-delay: 2.1s;
+  }
+
+  @keyframes il-zzz {
+    0% {
+      opacity: 0;
+      transform: translate(0, 0) rotate(-8deg);
+    }
+    25% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translate(1.4rem, -2.8rem) rotate(10deg);
+    }
   }
 
   .il-pop {
@@ -238,7 +385,7 @@ const pops = [
 
   .interlude[data-end] .il-pop {
     animation: il-pop 0.8s var(--ease-spring) forwards;
-    animation-delay: calc(var(--i) * 110ms + 150ms);
+    animation-delay: calc(var(--i) * 90ms + 250ms);
   }
 
   @keyframes il-pop {
@@ -248,115 +395,60 @@ const pops = [
     }
   }
 
-  .interlude:not([data-js]) .il-pivi {
-    left: 56%;
+  .interlude:not([data-js]) .il-cat,
+  .interlude[data-static] .il-cat {
     top: auto;
-    bottom: 0;
+    bottom: -0.9rem;
+    width: clamp(7.5rem, 30vw, 15rem);
+    translate: -50% 0;
   }
 
-  .interlude:not([data-js]) .il-ball {
-    left: 52%;
+  .interlude:not([data-js]) .il-cat[data-actor="mandarino"],
+  .interlude[data-static] .il-cat[data-actor="mandarino"] {
+    left: 20%;
+  }
+
+  .interlude:not([data-js]) .il-cat[data-actor="zombie"],
+  .interlude[data-static] .il-cat[data-actor="zombie"] {
+    left: 50%;
+  }
+
+  .interlude:not([data-js]) .il-cat[data-actor="pivi"],
+  .interlude[data-static] .il-cat[data-actor="pivi"] {
+    left: 80%;
+  }
+
+  .interlude:not([data-js]) .il-ball,
+  .interlude[data-static] .il-ball {
     top: auto;
-    bottom: 0.2rem;
+    bottom: 0.1rem;
+    width: clamp(2rem, 7vw, 3.4rem);
+    height: clamp(2rem, 7vw, 3.4rem);
+  }
+
+  .interlude:not([data-js]) .il-ball[data-ball="mandarino"],
+  .interlude[data-static] .il-ball[data-ball="mandarino"] {
+    left: 4%;
+  }
+
+  .interlude:not([data-js]) .il-ball[data-ball="zombie"],
+  .interlude[data-static] .il-ball[data-ball="zombie"] {
+    left: 60%;
+  }
+
+  .interlude:not([data-js]) .il-ball[data-ball="pivi"],
+  .interlude[data-static] .il-ball[data-ball="pivi"] {
+    left: 90%;
+  }
+
+  .interlude:not([data-js]) .il-threads,
+  .interlude[data-static] .il-threads,
+  .interlude:not([data-js]) .il-pop[data-left],
+  .interlude[data-static] .il-pop[data-left] {
+    display: none;
   }
 </style>
 
 <script>
-  const section = document.querySelector<HTMLElement>('[data-interlude]');
-  if (section) {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const stage = section.querySelector<HTMLElement>('.il-stage')!;
-    const thread = section.querySelector<SVGSVGElement>('.il-thread')!;
-    const path = thread.querySelector('path')!;
-    const hook = section.querySelector<HTMLElement>('.il-hook')!;
-    const pivi = section.querySelector<HTMLElement>('.il-pivi')!;
-    const ball = section.querySelector<HTMLElement>('.il-ball')!;
-
-    new IntersectionObserver(
-      (entries, observer) => {
-        if (!entries[0].isIntersecting) return;
-        section.querySelectorAll<HTMLImageElement>('img[loading="lazy"]').forEach((image) => (image.loading = 'eager'));
-        observer.disconnect();
-      },
-      { rootMargin: '120% 0px' },
-    ).observe(section);
-
-    if (reduce) {
-      section.setAttribute('data-static', '');
-      section.setAttribute('data-end', '');
-    } else {
-      section.setAttribute('data-js', '');
-      let width = 0;
-      let height = 0;
-      let pw = 0;
-      let ballSize = 0;
-      const clamp = (value: number, min = 0, max = 1) => Math.min(max, Math.max(min, value));
-      const ease = (value: number) => (value < 0.5 ? 4 * value ** 3 : 1 - (-2 * value + 2) ** 3 / 2);
-      const smooth = (a: number, b: number, value: number) => ease(clamp((value - a) / (b - a)));
-
-      const measure = () => {
-        width = stage.clientWidth;
-        height = stage.clientHeight;
-        pw = clamp(width * 0.36, 150, 300);
-        ballSize = clamp(width * 0.075, 38, 66);
-        pivi.style.width = `${pw}px`;
-        pivi.style.height = `${pw * 0.74}px`;
-        ball.style.width = ball.style.height = `${ballSize}px`;
-        thread.setAttribute('viewBox', `0 0 ${width} ${height}`);
-      };
-
-      let lastPose = '';
-      const render = (p: number) => {
-        const travel = ease(clamp(p / 0.9));
-        const bx = width * (0.4 + 0.46 * travel);
-        const hop = p > 0.12 && p < 0.88 ? Math.abs(Math.sin(p * Math.PI * 9)) * height * 0.1 : 0;
-        const by = height - ballSize - hop;
-        const catchUp = smooth(0.78, 0.96, p);
-        const px = bx - pw * (1.1 - 0.3 * catchUp);
-        let pose = 'sleep';
-        let lift = 0;
-        if (p < 0.08) pose = 'look-up';
-        else if (p < 0.22) pose = 'crouch';
-        else if (p < 0.78) {
-          const phase = (p * 7) % 1;
-          pose = phase < 0.5 ? 'pounce' : 'walk';
-          lift = phase < 0.5 ? Math.sin(phase * 2 * Math.PI) * height * 0.07 : Math.sin(phase * 4 * Math.PI) * 4;
-        } else if (p < 0.9) pose = 'swipe';
-        if (pose !== lastPose) {
-          pivi.querySelectorAll<HTMLElement>('.il-pose').forEach((image) => image.toggleAttribute('data-active', image.dataset.pose === pose));
-          lastPose = pose;
-        }
-        pivi.style.transform = `translate3d(${px}px, ${height - pivi.offsetHeight - lift}px, 0)`;
-        ball.style.transform = `translate3d(${bx - ballSize / 2}px, ${by}px, 0) rotate(${(bx / ballSize) * 57}deg)`;
-        const ax = hook.offsetLeft;
-        const ay = hook.offsetTop;
-        const tx = bx;
-        const ty = by + ballSize / 2;
-        const tension = clamp(Math.hypot(tx - ax, ty - ay) / (width * 1.05));
-        const sag = (1 - tension) * height * 0.6 + 18;
-        path.setAttribute('d', `M${ax} ${ay} Q${(ax + tx) / 2} ${(ay + ty) / 2 + sag} ${tx} ${ty}`);
-        section.toggleAttribute('data-end', p > 0.9);
-      };
-
-      let ticking = false;
-      const update = () => {
-        ticking = false;
-        const rect = section.getBoundingClientRect();
-        const total = rect.height - window.innerHeight;
-        render(clamp(total > 0 ? -rect.top / total : 0));
-      };
-      const request = () => {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(update);
-      };
-      measure();
-      update();
-      window.addEventListener('scroll', request, { passive: true });
-      window.addEventListener('resize', () => {
-        measure();
-        request();
-      });
-    }
-  }
+  import '../../scripts/interlude';
 </script>

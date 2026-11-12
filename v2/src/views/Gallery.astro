@@ -16,7 +16,7 @@ const t = useTranslations(lang);
 
 <Layout lang={lang} page="gallery" title={`${t('page_title_gallery')} | Cioccolato`} description={t('meta_description_gallery')}>
   <PageHeader title={t('page_title_gallery')} text={t('gallery_page_text')}>
-    <Michi slot="art" michi="zombie" poses={['sit', 'meow']} width={230} interact="meow" bubble={t('michi_meow')} />
+    <Michi slot="art" michi="zombie" poses={['sit', 'blink', 'meow']} width={230} interact="meow" routine loading="eager" sizes="(max-width: 768px) 180px, 300px" bubble={t('michi_meow')} />
   </PageHeader>
 
   <section class="section surface-cream-2 pt-20 sm:pt-28">
@@ -25,5 +25,5 @@ const t = useTranslations(lang);
     </div>
   </section>
 
-  <CtaBand lang={lang} />
+  <CtaBand lang={lang} michi="mandarino" pose="pounce" />
 </Layout>

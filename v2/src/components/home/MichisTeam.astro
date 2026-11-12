@@ -1,6 +1,8 @@
 ---
 import { Image } from 'astro:assets';
 import Michi from '../ui/Michi.astro';
+import Drip from '../ui/Drip.astro';
+import Words from '../ui/Words.astro';
 import { realPhoto } from '../../lib/assets';
 import { MICHIS } from '../../data/content';
 import { useTranslations, type Lang, type UIKey } from '../../i18n';
@@ -16,10 +18,11 @@ const tilt = ['-5deg', '4deg', '-3deg'];
 
 <section id="michis" class="section relative overflow-hidden text-crema-logo" style="background-color:var(--color-cacao-2)" aria-labelledby="michis-title">
   <div class="stars"></div>
+  <Drip color="#fff7ec" />
   <div class="container-site relative">
     <div class="mx-auto max-w-2xl text-center" data-reveal>
       <p class="eyebrow">{t('michis_eyebrow')}</p>
-      <h2 id="michis-title" class="display-title mt-4 text-crema">{t('michis_title')}</h2>
+      <h2 id="michis-title" class="words display-title mt-4 text-crema" data-reveal><Words text={t('michis_title')} /></h2>
       <p class="lead mt-5">{t('michis_subtitle')}</p>
     </div>
 
@@ -34,7 +37,8 @@ const tilt = ['-5deg', '4deg', '-3deg'];
             <div class="relative mx-auto -mt-14 w-[min(72%,15rem)]">
               <Michi
                 michi={michi.id}
-                poses={['sit', 'meow']}
+                poses={['sit', 'blink', 'look-left', 'look-right', 'meow']}
+                routine
                 width={300}
                 bubble={t('michi_meow')}
                 interact="meow"

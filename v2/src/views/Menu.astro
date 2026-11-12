@@ -22,7 +22,7 @@ const t = useTranslations(lang);
 
 <Layout lang={lang} page="menu" title={`${t('page_title_menu')} | Cioccolato`} description={t('meta_description_menu')}>
   <PageHeader title={t('page_title_menu')} text={t('menu_page_text')}>
-    <Michi slot="art" michi="pivi" poses={['sit', 'meow']} width={230} interact="meow" bubble={t('michi_meow')} />
+    <Michi slot="art" michi="pivi" poses={['sit', 'blink', 'meow']} width={230} interact="meow" routine loading="eager" sizes="(max-width: 768px) 180px, 300px" bubble={t('michi_meow')} />
   </PageHeader>
 
   <section class="section pt-20 sm:pt-28">
@@ -41,7 +41,8 @@ const t = useTranslations(lang);
                         alt=""
                         widths={[420, 640, 900]}
                         sizes="(min-width: 1024px) 380px, (min-width: 640px) 45vw, 92vw"
-                        loading="lazy"
+                        loading={index === 0 ? 'eager' : 'lazy'}
+                        fetchpriority={index === 0 ? 'high' : undefined}
                         class="size-full object-cover transition-transform duration-[900ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.07]"
                       />
                     ) : (
@@ -88,5 +89,5 @@ const t = useTranslations(lang);
   </section>
 
   <MacaronKnock lang={lang} />
-  <CtaBand lang={lang} />
+  <CtaBand lang={lang} michi="pivi" pose="pounce" />
 </Layout>

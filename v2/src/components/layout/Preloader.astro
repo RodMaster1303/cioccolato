@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import Cat from '../ui/Cat.astro';
 import wordScript from '../../assets/brand/wordmark-script.svg?raw';
 import wordSub from '../../assets/brand/wordmark-sub.svg?raw';
+import { YARN_INLINE } from '../../data/inline-yarn';
 import { sprite } from '../../lib/assets';
 import { useTranslations, type Lang } from '../../i18n';
 
@@ -24,9 +25,9 @@ const cats = [
     w: 58.8,
     bottom: 5,
     z: 2,
-    enter: 0.05,
+    enter: 0,
     sizes: '(min-width: 640px) 320px, 49vw',
-    steps: [['sit', 0.05, 0.78], ['look-left', 0.78, 1.22], ['look-right', 1.22, 1.95], ['meow', 1.95, 2.6], ['sit', 2.6, HOLD]],
+    steps: [['sit', 0, 0.28], ['look-right', 0.28, 0.8], ['meow', 0.8, 1.28], ['sit', 1.28, HOLD]],
   },
   {
     michi: 'mandarino',
@@ -34,9 +35,9 @@ const cats = [
     w: 40.9,
     bottom: 1,
     z: 3,
-    enter: 0.15,
+    enter: 0.07,
     sizes: '(min-width: 640px) 222px, 34vw',
-    steps: [['sit', 0.15, 0.62], ['swipe', 0.62, 0.9], ['look-right', 0.9, 2.2], ['sit', 2.2, HOLD]],
+    steps: [['sit', 0, 0.22], ['swipe', 0.22, 0.52], ['look-right', 0.52, 1.05], ['sit', 1.05, HOLD]],
   },
   {
     michi: 'zombie',
@@ -44,17 +45,17 @@ const cats = [
     w: 39.6,
     bottom: 0,
     z: 3,
-    enter: 0.25,
+    enter: 0.14,
     sizes: '(min-width: 640px) 215px, 33vw',
-    steps: [['crouch', 0.25, 1.89, true], ['pounce', 1.89, 2.15, true], ['meow', 2.15, 2.8], ['sit', 2.8, HOLD]],
+    steps: [['crouch', 0, 0.64, true], ['pounce', 0.64, 0.88, true], ['meow', 0.88, 1.3], ['sit', 1.3, HOLD]],
   },
 ] as const;
 
 const sweets = [
-  { name: 'obj-cake-strawberry', x: 10, y: 25, w: 18, at: 1.95, rot: -10 },
-  { name: 'obj-cupcake-yellow', x: 26, y: 9, w: 12, at: 2.02, rot: 8 },
-  { name: 'obj-cake-rainbow', x: 90, y: 27, w: 19, at: 2.09, rot: 9 },
-  { name: 'obj-cupcake-green', x: 75, y: 9, w: 12, at: 2.16, rot: -8 },
+  { name: 'obj-cake-strawberry', x: 10, y: 25, w: 18, at: 0.5, rot: -10 },
+  { name: 'obj-cupcake-yellow', x: 26, y: 9, w: 12, at: 0.57, rot: 8 },
+  { name: 'obj-cake-rainbow', x: 90, y: 27, w: 19, at: 0.64, rot: 9 },
+  { name: 'obj-cupcake-green', x: 75, y: 9, w: 12, at: 0.71, rot: -8 },
 ] as const;
 
 const sparks = Array.from({ length: 8 }, (_, index) => {
@@ -66,8 +67,6 @@ const sparks = Array.from({ length: 8 }, (_, index) => {
     color: ['var(--color-rosa-brillo)', 'var(--color-ambar)', 'var(--color-cian)', 'var(--color-lima)'][index % 4],
   };
 });
-
-const ball = sprite('obj-yarn-pink');
 
 function windows(steps: readonly Step[]) {
   return steps.map(([name, from, to, flip]) => ({
@@ -85,36 +84,38 @@ function windows(steps: readonly Step[]) {
   <div class="pl-stage">
     <div class="pl-scene">
       <div class="pl-cats">
-        <span class="pl-glow"></span>
-        {
-          sweets.map((sweet) => {
-            const meta = sprite(sweet.name);
-            return (
-              <span class="pl-sweet-pos" style={`left:${sweet.x}%;top:${sweet.y}%;width:${sweet.w}%`}>
-                <Image
-                  src={meta}
-                  alt=""
-                  widths={[120, 180, 240]}
-                  sizes={`(min-width: 640px) ${Math.round(sweet.w * 5.4)}px, ${Math.round(sweet.w * 0.84)}vw`}
-                  loading="lazy"
-                  decoding="async"
-                  class="pl-sweet"
-                  style={`--at:${sweet.at}s;--rot:${sweet.rot}deg;aspect-ratio:${meta.width}/${meta.height}`}
-                />
-              </span>
-            );
-          })
-        }
+        <div class="pl-extras pl-fade">
+          <span class="pl-glow"></span>
+          {
+            sweets.map((sweet) => {
+              const meta = sprite(sweet.name);
+              return (
+                <span class="pl-sweet-pos" style={`left:${sweet.x}%;top:${sweet.y}%;width:${sweet.w}%`}>
+                  <Image
+                    src={meta}
+                    alt=""
+                    widths={[120, 180, 240]}
+                    sizes={`(min-width: 640px) ${Math.round(sweet.w * 5.4)}px, ${Math.round(sweet.w * 0.84)}vw`}
+                    loading="lazy"
+                    decoding="async"
+                    class="pl-sweet"
+                    style={`--at:${sweet.at}s;--rot:${sweet.rot}deg;aspect-ratio:${meta.width}/${meta.height}`}
+                  />
+                </span>
+              );
+            })
+          }
+        </div>
         {
           cats.map((cat) => (
             <span class="pl-cat-pos" style={`left:${cat.x - cat.w / 2}%;bottom:${cat.bottom}%;width:${cat.w}%;z-index:${cat.z}`}>
-              <span class="pl-slot" style={`--at:${cat.enter}s`}>
+              <span class="pl-slot" data-cat={cat.michi} style={`--at:${cat.enter}s`}>
                 <Cat michi={cat.michi} poses={windows(cat.steps)} sizes={cat.sizes} lazy />
               </span>
             </span>
           ))
         }
-        <div class="pl-lane">
+        <div class="pl-lane pl-fade">
           <svg class="pl-thread" viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true">
             <defs>
               <linearGradient id="pl-thread-gradient" x1="0" x2="1" y1="0" y2="0">
@@ -126,21 +127,26 @@ function windows(steps: readonly Step[]) {
             <path d="M0 3C8 0.4 16 5.6 25 3S42 0.4 50 3S67 5.6 75 3S92 0.4 100 3" fill="none" stroke="url(#pl-thread-gradient)" stroke-opacity="0.28" stroke-width="7" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
             <path d="M0 3C8 0.4 16 5.6 25 3S42 0.4 50 3S67 5.6 75 3S92 0.4 100 3" fill="none" stroke="url(#pl-thread-gradient)" stroke-width="2.4" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
           </svg>
+          <i class="pl-pulse"></i>
           <span class="pl-ball">
-            <span class="pl-ball-hop">
-              <Image src={ball} alt="" widths={[60, 90, 120]} sizes="(min-width: 640px) 63px, 10vw" loading="lazy" decoding="async" class="pl-ball-img" />
+            <span class="pl-ball-in">
+              <span class="pl-ball-hop">
+                <img src={YARN_INLINE.src} alt="" width={YARN_INLINE.width} height={YARN_INLINE.height} class="pl-ball-img" />
+              </span>
             </span>
           </span>
           {sparks.map((spark) => <i class="pl-spark" style={`--dx:${spark.dx};--dy:${spark.dy};--c:${spark.color}`}></i>)}
         </div>
       </div>
-      <div class="pl-word">
+      <div class="pl-word pl-fade">
         <span class="pl-word-art" set:html={wordScript} />
         <span class="pl-cover"></span>
       </div>
     </div>
-    <div class="pl-sub" set:html={wordSub} />
-    <div class="pl-meter"><span></span></div>
+    <div class="pl-foot pl-fade">
+      <div class="pl-sub" set:html={wordSub} />
+      <div class="pl-meter"><span></span></div>
+    </div>
   </div>
   <span class="pl-shine"></span>
 </div>
@@ -170,6 +176,18 @@ function windows(steps: readonly Step[]) {
     pointer-events: none;
   }
 
+  html.intro-active .hero-halo,
+  html.intro-active .hero-sweet,
+  html.intro-active .hero-cat,
+  html.intro-active .marquee-track,
+  html.intro-active .fab-btn::after {
+    animation-play-state: paused;
+  }
+
+  html.intro-handoff [data-hero-trio] .hero-cat-pos {
+    opacity: 0;
+  }
+
   .pl-curtain {
     position: absolute;
     left: 0;
@@ -177,17 +195,15 @@ function windows(steps: readonly Step[]) {
     height: 51%;
     background: var(--color-cacao);
     z-index: 1;
-    transition: transform 0.9s var(--ease-in-out-quart);
+    transition: transform 0.85s var(--ease-in-out-quart);
   }
 
   .pl-curtain-top {
     top: 0;
-    transform-origin: top;
   }
 
   .pl-curtain-bottom {
     bottom: 0;
-    transform-origin: bottom;
   }
 
   html.intro-closing .pl-curtain-top {
@@ -198,12 +214,16 @@ function windows(steps: readonly Step[]) {
     transform: translateY(101%);
   }
 
-  html.intro-closing .pl-stage {
+  .pl-fade {
+    transition: opacity 0.32s ease;
+  }
+
+  html.intro-closing .pl-fade {
     opacity: 0;
-    transform: scale(1.06);
-    transition:
-      opacity 0.5s ease,
-      transform 0.9s var(--ease-in-out-quart);
+  }
+
+  html.intro-closing:not(.intro-handoff) .pl-slot {
+    animation: pl-out 0.32s ease forwards;
   }
 
   html.intro-skip .pl-stage {
@@ -215,17 +235,9 @@ function windows(steps: readonly Step[]) {
     transition-duration: 0.45s;
   }
 
-  html.intro-active .hero-halo,
-  html.intro-active .hero-sweet,
-  html.intro-active .hero-cat,
-  html.intro-active .marquee-track,
-  html.intro-active .fab-btn::after {
-    animation-play-state: paused;
-  }
-
   .pl-stage {
     --W: min(84vw, 34rem, 62svh);
-    --roll: cubic-bezier(0.4, 0.1, 0.3, 1);
+    --roll: cubic-bezier(0.45, 0.05, 0.3, 1);
     position: relative;
     z-index: 3;
     display: flex;
@@ -245,6 +257,11 @@ function windows(steps: readonly Step[]) {
     aspect-ratio: 100 / 66;
   }
 
+  .pl-extras {
+    position: absolute;
+    inset: 0;
+  }
+
   .pl-glow {
     position: absolute;
     inset: -6% -10% -2%;
@@ -253,8 +270,8 @@ function windows(steps: readonly Step[]) {
     opacity: 0;
   }
 
-  html.intro-run .pl-glow {
-    animation: pl-glow 1.8s ease-out 0.1s forwards;
+  html.intro-cast .pl-glow {
+    animation: pl-glow 1.3s ease-out forwards;
   }
 
   .pl-cat-pos {
@@ -267,11 +284,11 @@ function windows(steps: readonly Step[]) {
     transform-origin: 50% 100%;
   }
 
-  html.intro-run .pl-slot {
-    animation: pl-pop 0.6s var(--ease-spring) var(--at) forwards;
+  html.intro-cast .pl-slot {
+    animation: pl-pop 0.55s var(--ease-spring) var(--at) forwards;
   }
 
-  html.intro-run .pl-slot .cat-pose {
+  html.intro-cast .pl-slot .cat-pose {
     animation: pl-window var(--len) linear var(--on);
   }
 
@@ -289,8 +306,8 @@ function windows(steps: readonly Step[]) {
     opacity: 0;
   }
 
-  html.intro-run .pl-sweet {
-    animation: pl-sweet-in 0.6s var(--ease-spring) var(--at) forwards;
+  html.intro-cast .pl-sweet {
+    animation: pl-sweet-in 0.55s var(--ease-spring) var(--at) forwards;
   }
 
   .pl-lane {
@@ -315,7 +332,24 @@ function windows(steps: readonly Step[]) {
   }
 
   html.intro-run .pl-thread {
-    animation: pl-thread 1.15s var(--roll) 0.74s forwards;
+    animation: pl-thread 0.95s var(--roll) 0.3s forwards;
+  }
+
+  .pl-pulse {
+    position: absolute;
+    left: 12%;
+    bottom: -5px;
+    width: 0.7rem;
+    height: 0.7rem;
+    margin-left: -0.35rem;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 14px 5px var(--color-rosa-brillo);
+    opacity: 0;
+  }
+
+  html.intro-cast .pl-pulse {
+    animation: pl-pulse 0.3s var(--ease-in-out-quart) 0.3s forwards;
   }
 
   .pl-ball {
@@ -326,15 +360,29 @@ function windows(steps: readonly Step[]) {
   }
 
   html.intro-run .pl-ball {
-    animation: pl-ball-x 1.15s var(--roll) 0.74s forwards;
+    animation: pl-ball-x 0.95s var(--roll) 0.3s forwards;
+  }
+
+  .pl-ball-in {
+    display: block;
+    opacity: 0;
+  }
+
+  html.intro-run .pl-ball-in {
+    animation: pl-ball-in 0.3s cubic-bezier(0.3, 0.6, 0.4, 1) 0.02s forwards;
   }
 
   .pl-ball-hop {
     display: block;
+    transform-origin: 50% 100%;
   }
 
   html.intro-run .pl-ball-hop {
-    animation: pl-bounce 0.38s ease-in-out 0.74s 3;
+    animation: pl-bounce 0.315s ease-in-out 0.3s 3;
+  }
+
+  html.intro-cast .pl-ball-hop {
+    animation: pl-ball-caught 0.26s ease-in 0.56s forwards;
   }
 
   .pl-ball-img {
@@ -342,13 +390,10 @@ function windows(steps: readonly Step[]) {
     width: 100%;
     height: auto;
     max-width: none;
-    opacity: 0;
   }
 
   html.intro-run .pl-ball-img {
-    animation:
-      pl-ball-life 1.2s linear 0.72s both,
-      pl-ball-roll 1.15s var(--roll) 0.74s forwards;
+    animation: pl-ball-roll 1.25s linear 0.02s forwards;
   }
 
   .pl-spark {
@@ -364,8 +409,8 @@ function windows(steps: readonly Step[]) {
     opacity: 0;
   }
 
-  html.intro-run .pl-spark {
-    animation: pl-spark 0.7s cubic-bezier(0.2, 0.8, 0.3, 1) 1.9s forwards;
+  html.intro-cast .pl-spark {
+    animation: pl-spark 0.65s cubic-bezier(0.2, 0.8, 0.3, 1) 0.7s forwards;
   }
 
   .pl-word {
@@ -377,7 +422,12 @@ function windows(steps: readonly Step[]) {
 
   .pl-word-art {
     display: block;
+    opacity: 0;
     filter: drop-shadow(0 0 14px color-mix(in srgb, var(--color-crema-logo) 45%, transparent));
+  }
+
+  html.intro-run .pl-word-art {
+    animation: pl-show 1ms linear 0.3s forwards;
   }
 
   .pl-word-art svg {
@@ -393,7 +443,14 @@ function windows(steps: readonly Step[]) {
   }
 
   html.intro-run .pl-cover {
-    animation: pl-uncover 1.15s var(--roll) 0.74s forwards;
+    animation: pl-uncover 0.95s var(--roll) 0.3s forwards;
+  }
+
+  .pl-foot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
   }
 
   .pl-sub {
@@ -411,7 +468,7 @@ function windows(steps: readonly Step[]) {
   }
 
   html.intro-run .pl-sub {
-    animation: pl-fade-up 0.6s ease 2.05s forwards;
+    animation: pl-fade-up 0.5s ease 0.95s forwards;
   }
 
   .pl-shine {
@@ -423,8 +480,8 @@ function windows(steps: readonly Step[]) {
     mix-blend-mode: overlay;
   }
 
-  html.intro-run .pl-shine {
-    animation: pl-shine 0.9s ease-in-out 2.35s forwards;
+  html.intro-cast .pl-shine {
+    animation: pl-shine 0.75s ease-in-out 0.8s forwards;
   }
 
   .pl-meter {
@@ -438,7 +495,7 @@ function windows(steps: readonly Step[]) {
   }
 
   html.intro-run .pl-meter {
-    animation: pl-fade-up 0.4s ease 0.1s forwards;
+    animation: pl-fade-up 0.3s ease 0.05s forwards;
   }
 
   .pl-meter span {
@@ -450,7 +507,26 @@ function windows(steps: readonly Step[]) {
   }
 
   html.intro-run .pl-meter span {
-    animation: pl-meter 3s var(--ease-in-out-quart) 0.1s forwards;
+    animation: pl-meter-logo 1.25s var(--ease-out-quart) 0.05s forwards;
+  }
+
+  html.intro-cast .pl-meter span {
+    animation: pl-meter-cast 1.3s var(--ease-in-out-quart) forwards;
+  }
+
+  @keyframes pl-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes pl-show {
+    to {
+      opacity: 1;
+    }
   }
 
   @keyframes pl-pop {
@@ -488,6 +564,38 @@ function windows(steps: readonly Step[]) {
     }
   }
 
+  @keyframes pl-pulse {
+    0% {
+      opacity: 1;
+      transform: translateX(0) scale(0.6);
+    }
+    85% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(calc(var(--W) * 0.8)) scale(1.3);
+    }
+  }
+
+  @keyframes pl-ball-in {
+    0% {
+      opacity: 0;
+      transform: translate(calc(var(--W) * -0.36), calc(var(--W) * -0.12));
+    }
+    20% {
+      opacity: 1;
+    }
+    70% {
+      opacity: 1;
+      transform: translate(calc(var(--W) * -0.08), 0);
+    }
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
   @keyframes pl-ball-x {
     to {
       transform: translateX(calc(var(--W) * 0.88));
@@ -495,14 +603,11 @@ function windows(steps: readonly Step[]) {
   }
 
   @keyframes pl-ball-roll {
+    from {
+      rotate: -300deg;
+    }
     to {
       rotate: 820deg;
-    }
-  }
-
-  @keyframes pl-uncover {
-    to {
-      transform: translateX(100%);
     }
   }
 
@@ -512,25 +617,24 @@ function windows(steps: readonly Step[]) {
     }
   }
 
-  @keyframes pl-ball-life {
+  @keyframes pl-ball-caught {
     0% {
-      opacity: 0;
-      scale: 0.3;
-    }
-    7% {
       opacity: 1;
-      scale: 1.15;
+      transform: translateY(0) scale(1);
     }
-    12% {
-      scale: 1;
-    }
-    90% {
+    45% {
       opacity: 1;
-      scale: 1;
+      transform: translateY(calc(var(--W) * -0.07)) scale(1.08);
     }
     100% {
       opacity: 0;
-      scale: 0.15;
+      transform: translateY(0) scale(0.2);
+    }
+  }
+
+  @keyframes pl-uncover {
+    to {
+      transform: translateX(100%);
     }
   }
 
@@ -567,7 +671,16 @@ function windows(steps: readonly Step[]) {
     }
   }
 
-  @keyframes pl-meter {
+  @keyframes pl-meter-logo {
+    to {
+      transform: scaleX(0.55);
+    }
+  }
+
+  @keyframes pl-meter-cast {
+    from {
+      transform: scaleX(0.55);
+    }
     to {
       transform: scaleX(1);
     }

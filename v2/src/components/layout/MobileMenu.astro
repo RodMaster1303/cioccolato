@@ -80,4 +80,26 @@ const items = [{ page: 'home' as PageKey, labelKey: 'nav_home' as const }, ...NA
   #mobile-menu::backdrop {
     background: transparent;
   }
+
+  #mobile-menu {
+    opacity: 0;
+    clip-path: circle(0 at calc(100% - 2.2rem) 2.3rem);
+    transition:
+      opacity 0.3s ease,
+      clip-path 0.65s var(--ease-out-expo),
+      overlay 0.65s allow-discrete,
+      display 0.65s allow-discrete;
+  }
+
+  #mobile-menu[open] {
+    opacity: 1;
+    clip-path: circle(150% at calc(100% - 2.2rem) 2.3rem);
+  }
+
+  @starting-style {
+    #mobile-menu[open] {
+      opacity: 0;
+      clip-path: circle(0 at calc(100% - 2.2rem) 2.3rem);
+    }
+  }
 </style>

@@ -14,9 +14,10 @@ import { useTranslations, type Lang, type UIKey } from '../../i18n';
 
 interface Props {
   lang: Lang;
+  heading?: 'h2' | 'h3';
 }
 
-const { lang } = Astro.props;
+const { lang, heading: Heading = 'h3' } = Astro.props;
 const t = useTranslations(lang);
 const icons = {
   weddings: HeartHandshake,
@@ -45,7 +46,7 @@ const accents = ['var(--color-rosa-brillo)', 'var(--color-naranja)', 'var(--colo
             >
               <Icon size={26} stroke-width={1.8} aria-hidden="true" />
             </span>
-            <h3 class="mt-5 text-[1.35rem]">{title}</h3>
+            <Heading class="mt-5 text-[1.35rem]">{title}</Heading>
             <p class="mt-2 flex-1 text-[0.97rem] text-chocolate/75">{t(`service_${id}_desc` as UIKey)}</p>
             <a
               href={whatsappLink(t('service_quote_message', { service: title }))}
