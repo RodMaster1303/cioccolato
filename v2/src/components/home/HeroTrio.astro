@@ -25,9 +25,9 @@ const POSES = [
 ] as const;
 
 const cats = [
-  { michi: 'pivi', x: 50, w: 69, bottom: 12, z: 2, depth: 0.5, enter: 0.1, breath: '0s', sizes: '(min-width: 1024px) 453px, (min-width: 640px) 55vw, 48vw', priority: true },
-  { michi: 'mandarino', x: 22, w: 46, bottom: 8, z: 3, depth: 0.9, enter: 0.25, breath: '-1.3s', sizes: '(min-width: 1024px) 302px, (min-width: 640px) 37vw, 32vw', priority: false },
-  { michi: 'zombie', x: 78, w: 44.7, bottom: 7, z: 3, depth: 0.9, enter: 0.4, breath: '-2.2s', sizes: '(min-width: 1024px) 293px, (min-width: 640px) 36vw, 31vw', priority: false },
+  { michi: 'pivi', x: 50, w: 69, bottom: 12, z: 2, depth: 0.5, enter: 0.1, breath: '0s', sizes: '(min-width: 1024px) 453px, (min-width: 640px) 55vw, 58vw', extraSizes: '(min-width: 1024px) 453px, (min-width: 640px) 55vw, 48vw', priority: true },
+  { michi: 'mandarino', x: 22, w: 46, bottom: 8, z: 3, depth: 0.9, enter: 0.25, breath: '-1.3s', sizes: '(min-width: 1024px) 302px, (min-width: 640px) 37vw, 39vw', extraSizes: '(min-width: 1024px) 302px, (min-width: 640px) 37vw, 32vw', priority: false },
+  { michi: 'zombie', x: 78, w: 44.7, bottom: 7, z: 3, depth: 0.9, enter: 0.4, breath: '-2.2s', sizes: '(min-width: 1024px) 293px, (min-width: 640px) 36vw, 38vw', extraSizes: '(min-width: 1024px) 293px, (min-width: 640px) 36vw, 31vw', priority: false },
 ] as const;
 
 const sweets = [
@@ -71,7 +71,7 @@ const sweets = [
     cats.map((cat) => (
       <span class="hero-cat-pos" style={`left:${cat.x - cat.w / 2}%;bottom:${cat.bottom}%;width:${cat.w}%;z-index:${cat.z}`}>
         <span class="hero-slot" style={`--depth:${cat.depth};--enter:${cat.enter}s;--breath:${cat.breath}`}>
-          <Cat michi={cat.michi} poses={[...POSES]} sizes={cat.sizes} active="sit" priority={cat.priority} class="hero-cat">
+          <Cat michi={cat.michi} poses={[...POSES]} sizes={cat.sizes} extraSizes={cat.extraSizes} active="sit" priority={cat.priority} class="hero-cat">
             <span class="hero-hit" aria-hidden="true"></span>
             <span class="cat-bubble" aria-hidden="true">{t('michi_meow')}</span>
             <span class="hero-zzz" aria-hidden="true"><i>z</i><i>z</i><i>Z</i></span>
@@ -91,7 +91,7 @@ const sweets = [
     --mx: 0;
     --my: 0;
     position: relative;
-    width: min(70vw, 41rem, 78svh);
+    width: min(84vw, 41rem, 48svh);
     aspect-ratio: 1600 / 1498;
     margin-inline: auto;
   }

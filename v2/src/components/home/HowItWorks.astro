@@ -23,16 +23,18 @@ const icons = ['obj-cupcake-yellow', 'obj-macaron-pink', 'obj-croissant', 'obj-c
       <h2 id="how-title" class="words display-title mt-4" data-reveal><Words text={t('how_title')} /></h2>
     </div>
 
-    <ol class="how-steps relative mt-16 grid gap-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+    <ol class="how-steps relative mt-12 grid gap-8 sm:mt-16 sm:grid-cols-2 sm:gap-12 lg:grid-cols-4 lg:gap-8">
       {
         HOW_STEPS.map((step, index) => (
-          <li class="relative text-center" data-reveal style={`--d:${index}`}>
-            <div class="step-badge relative mx-auto grid size-28 place-items-center rounded-full bg-cacao ring-[6px] ring-crema">
-              <Image src={sprite(icons[index])} alt="" width={72} densities={[1, 2]} loading="lazy" class="sprite h-auto w-[4.5rem]" />
-              <span class="absolute -left-1 -top-1 grid size-9 place-items-center rounded-full bg-rosa-brillo font-display text-lg font-bold text-cacao">{step}</span>
+          <li class="relative grid grid-cols-[auto_1fr] items-center gap-5 text-left sm:block sm:text-center" data-reveal style={`--d:${index}`}>
+            <div class="step-badge relative grid size-20 place-items-center rounded-full bg-cacao ring-[6px] ring-crema sm:mx-auto sm:size-28">
+              <Image src={sprite(icons[index])} alt="" width={72} densities={[1, 2]} loading="lazy" class="sprite h-auto w-12 sm:w-[4.5rem]" />
+              <span class="absolute -left-1 -top-1 grid size-7 place-items-center rounded-full bg-rosa-brillo font-display text-sm font-bold text-cacao sm:size-9 sm:text-lg">{step}</span>
             </div>
-            <h3 class="mt-6 text-[1.3rem]">{t(`how_${step}_title` as UIKey)}</h3>
-            <p class="mx-auto mt-2 max-w-[17rem] text-[0.97rem] text-chocolate/75">{t(`how_${step}_text` as UIKey)}</p>
+            <div>
+              <h3 class="text-[1.3rem] sm:mt-6">{t(`how_${step}_title` as UIKey)}</h3>
+              <p class="mt-1 text-[0.97rem] text-chocolate/75 sm:mx-auto sm:mt-2 sm:max-w-[17rem]">{t(`how_${step}_text` as UIKey)}</p>
+            </div>
           </li>
         ))
       }
@@ -41,6 +43,38 @@ const icons = ['obj-cupcake-yellow', 'obj-macaron-pink', 'obj-croissant', 'obj-c
 </section>
 
 <style>
+  @media (max-width: 639px) {
+    .how-steps::before {
+      content: "";
+      position: absolute;
+      top: 2.5rem;
+      bottom: 2.5rem;
+      left: calc(2.5rem - 1px);
+      width: 2px;
+      background: linear-gradient(var(--color-rosa-brillo), var(--color-ambar));
+      transform-origin: top;
+    }
+
+    @supports (animation-timeline: view()) {
+      @media (prefers-reduced-motion: no-preference) {
+        .how-steps::before {
+          animation: how-line linear both;
+          animation-timeline: view();
+          animation-range: entry 25% cover 65%;
+        }
+      }
+    }
+  }
+
+  @keyframes how-line {
+    from {
+      transform: scaleY(0);
+    }
+    to {
+      transform: scaleY(1);
+    }
+  }
+
   @media (min-width: 1024px) {
     .how-steps::before {
       content: "";

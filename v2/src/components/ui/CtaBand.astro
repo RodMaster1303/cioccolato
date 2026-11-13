@@ -29,7 +29,7 @@ const floaters = [
     <div data-reveal>
       <h2 id="cta-title" class="words display-title text-balance" data-reveal><Words text={t('cta_title')} /></h2>
       <p class="lead mt-5 max-w-xl">{t('cta_text')}</p>
-      <div class="mt-8 flex flex-wrap items-center gap-4">
+      <div class="mt-8 flex flex-wrap items-center gap-4" data-fab-hide>
         <a href={whatsappLink(t('whatsapp_default_message'))} target="_blank" rel="noopener" class="btn btn-primary">
           {t('cta_button')}
           <ArrowUpRight size={18} />

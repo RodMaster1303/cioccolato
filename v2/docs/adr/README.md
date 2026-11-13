@@ -19,6 +19,7 @@ Registro de las decisiones del sitio nuevo de Cioccolato (carpeta `v2/`). Cada A
 | [0013](0013-escena-de-scroll-con-los-tres-michis.md) | Escena de scroll con los tres michis | Aceptada |
 | [0014](0014-sistema-de-movimiento-y-dinamismo.md) | Sistema de movimiento y dinamismo | Aceptada |
 | [0015](0015-michis-normalizados-rutinas-y-uso-en-todas-las-vistas.md) | Michis normalizados, rutinas automáticas y uso en todas las vistas | Aceptada |
+| [0016](0016-prioridad-telefono-en-vertical.md) | Prioridad al teléfono en vertical | Aceptada |
 
 ## Formato
 

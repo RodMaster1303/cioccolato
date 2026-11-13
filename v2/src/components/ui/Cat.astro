@@ -13,6 +13,7 @@ interface Props {
   michi: 'pivi' | 'mandarino' | 'zombie';
   poses: Pose[];
   sizes: string;
+  extraSizes?: string;
   active?: string;
   priority?: boolean;
   lazy?: boolean;
@@ -21,7 +22,7 @@ interface Props {
 
 const WIDTHS = [240, 360, 540, 720];
 
-const { michi, poses, sizes, active, priority = false, lazy = false, class: className = '' } = Astro.props;
+const { michi, poses, sizes, extraSizes, active, priority = false, lazy = false, class: className = '' } = Astro.props;
 ---
 
 <span class:list={['cat', className]} data-cat={michi}>
@@ -31,7 +32,7 @@ const { michi, poses, sizes, active, priority = false, lazy = false, class: clas
         src={catPose(`${michi}-${pose.name}`)}
         alt=""
         widths={WIDTHS}
-        sizes={sizes}
+        sizes={pose.extra && extraSizes ? extraSizes : sizes}
         quality={66}
         loading={lazy || pose.extra ? 'lazy' : 'eager'}
         fetchpriority={priority && index === 0 ? 'high' : undefined}

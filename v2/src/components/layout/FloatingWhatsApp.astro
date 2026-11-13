@@ -30,6 +30,20 @@ const t = useTranslations(lang);
 </a>
 
 <style>
+  .fab {
+    transition:
+      opacity 0.35s ease,
+      translate 0.5s var(--ease-out-expo);
+  }
+
+  @media (max-width: 639px) {
+    :global(html[data-fab-hidden]) .fab {
+      opacity: 0;
+      translate: 0 130%;
+      pointer-events: none;
+    }
+  }
+
   .fab-btn::after {
     content: "";
     position: absolute;

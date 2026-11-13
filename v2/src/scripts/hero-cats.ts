@@ -115,6 +115,10 @@ function start(trio: HTMLElement, hero: HTMLElement): void {
     }, ms + 60);
   }
 
+  function buzz(): void {
+    if (navigator.userActivation?.hasBeenActive) navigator.vibrate?.(12);
+  }
+
   function meow(cat: HeroCat, others = true): void {
     if (sleeping) return;
     clearPlay(cat);
@@ -301,6 +305,21 @@ function start(trio: HTMLElement, hero: HTMLElement): void {
 
   const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
+  if (!finePointer) {
+    let driftFrame = 0;
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (driftFrame || !visible) return;
+        driftFrame = requestAnimationFrame(() => {
+          driftFrame = 0;
+          trio.style.setProperty('--my', (Math.min(window.scrollY / hero.offsetHeight, 1) * -2.4).toFixed(3));
+        });
+      },
+      { passive: true },
+    );
+  }
+
   const idle = (callback: () => void, timeout: number): void => {
     const request = window.requestIdleCallback as typeof window.requestIdleCallback | undefined;
     if (request) request.call(window, callback, { timeout });
@@ -331,7 +350,10 @@ function start(trio: HTMLElement, hero: HTMLElement): void {
   window.addEventListener('scroll', activity, { passive: true });
 
   cats.forEach((cat) => {
-    cat.el.addEventListener('pointerdown', () => meow(cat));
+    cat.el.addEventListener('pointerdown', () => {
+      buzz();
+      meow(cat);
+    });
     cat.el.addEventListener('animationend', (event) => {
       if (event.animationName === 'hero-hop') cat.el.removeAttribute('data-hop');
     });

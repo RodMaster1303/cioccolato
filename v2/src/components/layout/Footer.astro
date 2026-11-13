@@ -57,8 +57,8 @@ const visibleSocials = socials.filter((social) => social.href);
           loading="lazy"
           class="footer-seal size-[5.25rem] shrink-0 rounded-[1.4rem] object-cover"
         />
-        <a href={homePath(lang)} class="inline-block w-44 text-crema-logo" aria-label="Cioccolato">
-          <span class="wm block" set:html={wordScript} />
+        <a href={homePath(lang)} class="inline-flex min-h-11 w-44 items-center text-crema-logo" aria-label="Cioccolato">
+          <span class="wm block w-full" set:html={wordScript} />
         </a>
       </div>
       <p class="mt-5 text-sm leading-relaxed text-crema-logo/75">{t('footer_description')}</p>
@@ -84,11 +84,11 @@ const visibleSocials = socials.filter((social) => social.href);
 
     <nav aria-labelledby="footer-links-title">
       <h2 id="footer-links-title" class="!font-sans text-xs font-bold uppercase tracking-[0.2em] text-rosa-brillo">{t('footer_links')}</h2>
-      <ul class="mt-5 space-y-3">
+      <ul class="mt-3 grid grid-cols-2 gap-x-6 sm:mt-5 sm:block sm:space-y-3">
         {
           [{ page: 'home' as const, labelKey: 'nav_home' as const }, ...NAV_ITEMS].map((item) => (
             <li>
-              <a href={pathFor(lang, item.page)} class="text-sm text-crema-logo/80 transition-colors hover:text-crema">
+              <a href={pathFor(lang, item.page)} class="inline-flex min-h-11 items-center text-sm text-crema-logo/80 transition-colors hover:text-crema sm:inline sm:min-h-0">
                 {t(item.labelKey)}
               </a>
             </li>
@@ -104,7 +104,7 @@ const visibleSocials = socials.filter((social) => social.href);
           <MapPin size={18} class="mt-0.5 shrink-0 text-ambar" />
           <span>
             {SITE.street}<br />{SITE.venue}, {SITE.city}<br />
-            <a href={SITE.mapsUrl} target="_blank" rel="noopener noreferrer" class="mt-1 inline-block font-semibold text-crema underline decoration-rosa-brillo/60 underline-offset-4 hover:text-rosa-brillo">
+            <a href={SITE.mapsUrl} target="_blank" rel="noopener noreferrer" class="mt-1 inline-flex min-h-11 items-center font-semibold text-crema underline decoration-rosa-brillo/60 underline-offset-4 hover:text-rosa-brillo sm:min-h-0">
               {t('footer_map')}
             </a>
           </span>
@@ -113,9 +113,9 @@ const visibleSocials = socials.filter((social) => social.href);
           <Clock size={18} class="mt-0.5 shrink-0 text-ambar" />
           <span>{t('footer_hours')}<br /><span class="text-crema-logo/60">{t('footer_hours_note')}</span></span>
         </li>
-        <li class="flex gap-3">
-          <Phone size={18} class="mt-0.5 shrink-0 text-ambar" />
-          <a href={SITE.phoneHref} class="font-semibold text-crema hover:text-rosa-brillo">{SITE.phoneDisplay}</a>
+        <li class="flex items-center gap-3">
+          <Phone size={18} class="shrink-0 text-ambar" />
+          <a href={SITE.phoneHref} class="inline-flex min-h-11 items-center font-semibold text-crema hover:text-rosa-brillo sm:min-h-0">{SITE.phoneDisplay}</a>
         </li>
       </ul>
     </div>

@@ -52,3 +52,18 @@ if (mobileMenu instanceof HTMLDialogElement) {
     if (event.matches && mobileMenu.open) mobileMenu.close();
   });
 }
+
+const fabBlockers = document.querySelectorAll<HTMLElement>('[data-fab-hide]');
+if (fabBlockers.length && 'IntersectionObserver' in window) {
+  const blocking = new Set<Element>();
+  const sync = (entries: IntersectionObserverEntry[]): void => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) blocking.add(entry.target);
+      else blocking.delete(entry.target);
+    }
+    document.documentElement.toggleAttribute('data-fab-hidden', blocking.size > 0);
+  };
+  const edge = new IntersectionObserver(sync, { threshold: 0.5 });
+  const band = new IntersectionObserver(sync, { rootMargin: '-45% 0px -45% 0px' });
+  fabBlockers.forEach((element) => (element.dataset.fabHide === 'band' ? band : edge).observe(element));
+}

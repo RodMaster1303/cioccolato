@@ -4,14 +4,15 @@ import Michi from './Michi.astro';
 interface Props {
   michi: 'pivi' | 'mandarino' | 'zombie';
   beat?: string;
+  width?: number;
   class?: string;
 }
 
-const { michi, beat = '0s', class: className = '' } = Astro.props;
+const { michi, beat = '0s', width = 220, class: className = '' } = Astro.props;
 ---
 
 <div class:list={['peek-cat pointer-events-none absolute z-0', className]} style={`--beat:${beat}`} aria-hidden="true">
-  <Michi michi={michi} poses={['peek']} width={220} />
+  <Michi michi={michi} poses={['peek']} width={width} />
 </div>
 
 <style is:global>

@@ -15,9 +15,10 @@ import { useTranslations, type Lang, type UIKey } from '../../i18n';
 interface Props {
   lang: Lang;
   heading?: 'h2' | 'h3';
+  carousel?: boolean;
 }
 
-const { lang, heading: Heading = 'h3' } = Astro.props;
+const { lang, heading: Heading = 'h3', carousel = false } = Astro.props;
 const t = useTranslations(lang);
 const icons = {
   weddings: HeartHandshake,
@@ -32,7 +33,7 @@ const icons = {
 const accents = ['var(--color-rosa-brillo)', 'var(--color-naranja)', 'var(--color-cian)', 'var(--color-ambar)'];
 ---
 
-<ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+<ul class:list={['grid gap-5 sm:grid-cols-2 lg:grid-cols-4', carousel && 'services-rail']} data-rail={carousel ? '' : undefined}>
   {
     SERVICE_IDS.map((id, index) => {
       const Icon = icons[id];
@@ -52,7 +53,7 @@ const accents = ['var(--color-rosa-brillo)', 'var(--color-naranja)', 'var(--colo
               href={whatsappLink(t('service_quote_message', { service: title }))}
               target="_blank"
               rel="noopener"
-              class="mt-5 inline-flex items-center gap-1.5 text-sm font-extrabold text-rosa-ink transition-all hover:gap-2.5 hover:text-chocolate"
+              class="mt-3 inline-flex min-h-11 items-center gap-1.5 text-sm font-extrabold text-rosa-ink transition-all hover:gap-2.5 hover:text-chocolate"
             >
               {t('service_cta')}
               <ArrowUpRight size={16} aria-hidden="true" />
@@ -63,3 +64,73 @@ const accents = ['var(--color-rosa-brillo)', 'var(--color-naranja)', 'var(--colo
     })
   }
 </ul>
+{
+  carousel && (
+    <div class="services-dots flex justify-center gap-2 sm:hidden" data-rail-dots aria-hidden="true">
+      {SERVICE_IDS.map((_, index) => <span data-active={index === 0 ? '' : undefined} />)}
+    </div>
+  )
+}
+
+<style>
+  @media (max-width: 639px) {
+    .services-rail {
+      display: flex;
+      gap: 0.9rem;
+      margin-inline: -1.25rem;
+      padding: 0.25rem 1.25rem 1.5rem;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: 1.25rem;
+      scrollbar-width: none;
+    }
+
+    .services-rail::-webkit-scrollbar {
+      display: none;
+    }
+
+    .services-rail > li {
+      flex: 0 0 78%;
+      scroll-snap-align: start;
+    }
+  }
+
+  .services-dots span {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--color-chocolate) 22%, transparent);
+    transition:
+      width 0.35s var(--ease-out-expo),
+      background-color 0.3s;
+  }
+
+  .services-dots span[data-active] {
+    width: 1.4rem;
+    background: var(--color-rosa-brillo);
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-rail]').forEach((rail) => {
+    const dots = [...(rail.parentElement?.querySelectorAll<HTMLElement>('[data-rail-dots] span') ?? [])];
+    if (!dots.length) return;
+    let frame = 0;
+    rail.addEventListener(
+      'scroll',
+      () => {
+        if (frame) return;
+        frame = requestAnimationFrame(() => {
+          frame = 0;
+          const first = rail.firstElementChild as HTMLElement | null;
+          if (!first) return;
+          const step = first.offsetWidth + parseFloat(getComputedStyle(rail).columnGap || '0');
+          const current = Math.min(dots.length - 1, Math.round(rail.scrollLeft / step));
+          dots.forEach((dot, index) => dot.toggleAttribute('data-active', index === current));
+        });
+      },
+      { passive: true },
+    );
+  });
+</script>

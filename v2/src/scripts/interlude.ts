@@ -5,6 +5,7 @@ interface Act {
   hookWide: number;
   enter: number;
   rest: number;
+  restNarrow: number;
   ballRest: number;
   dir: 1 | -1;
   swing: boolean;
@@ -34,9 +35,9 @@ interface Actor {
 }
 
 const ACTS: Record<string, Act> = {
-  pivi: { start: 0.03, end: 0.31, hook: 0.2, hookWide: 0.4, enter: -0.3, rest: 0.8, ballRest: 0.94, dir: 1, swing: false },
-  mandarino: { start: 0.31, end: 0.59, hook: 0.66, hookWide: 0.66, enter: 1.3, rest: 0.2, ballRest: 0.06, dir: -1, swing: false },
-  zombie: { start: 0.59, end: 0.88, hook: 0.5, hookWide: 0.5, enter: -0.3, rest: 0.5, ballRest: 0.64, dir: 1, swing: true },
+  pivi: { start: 0.03, end: 0.31, hook: 0.2, hookWide: 0.4, enter: -0.3, rest: 0.8, restNarrow: 0.82, ballRest: 0.94, dir: 1, swing: false },
+  mandarino: { start: 0.31, end: 0.59, hook: 0.66, hookWide: 0.66, enter: 1.3, rest: 0.2, restNarrow: 0.18, ballRest: 0.06, dir: -1, swing: false },
+  zombie: { start: 0.59, end: 0.88, hook: 0.5, hookWide: 0.5, enter: -0.3, rest: 0.5, restNarrow: 0.5, ballRest: 0.64, dir: 1, swing: true },
 };
 const END = 0.9;
 
@@ -75,6 +76,7 @@ if (section) {
   let height = 0;
   let size = 0;
   let ballSize = 0;
+  const restX = (act: Act): number => (width < 640 ? act.restNarrow : act.rest) * width;
   const hookX = (act: Act): number => (width >= 1024 ? act.hookWide : act.hook) * width;
 
   new IntersectionObserver(
@@ -104,7 +106,7 @@ if (section) {
     const roll = clamp((q - 0.25) / 0.55);
     const bx = lerp(hookX(act), act.ballRest * width, ease(roll));
     const by = lerp(hang, floor, drop * drop) - Math.abs(Math.sin(roll * Math.PI * 5)) * height * 0.1;
-    const gap = lerp(size * 0.58, Math.abs(act.ballRest - act.rest) * width, smooth(0.7, 0.9, q));
+    const gap = lerp(size * 0.58, Math.abs(act.ballRest * width - restX(act)), smooth(0.7, 0.9, q));
     const cx = lerp(act.enter * width, bx - act.dir * gap, smooth(0, 0.08, q));
     let pose = 'sleep';
     let lift = 0;
@@ -134,7 +136,7 @@ if (section) {
     const fall = smooth(0.71, 0.84, q);
     const bx = lerp(hookX(act) + Math.sin(angle) * length, act.ballRest * width, fall);
     const by = lerp(Math.cos(angle) * length, floor, fall * fall) - Math.sin(fall * Math.PI) * height * 0.05;
-    const cx = lerp(act.enter * width, act.rest * width, smooth(0, 0.3, q));
+    const cx = lerp(act.enter * width, restX(act), smooth(0, 0.3, q));
     let pose = 'sleep';
     let lift = 0;
     if (q < 0.3) {
@@ -183,7 +185,7 @@ if (section) {
   const measure = (): void => {
     width = stage.clientWidth;
     height = stage.clientHeight;
-    size = clamp(width * 0.31, 118, 260);
+    size = clamp(width * 0.36, 128, 260);
     ballSize = clamp(width * 0.075, 34, 68);
     threads.setAttribute('viewBox', `0 0 ${width} ${height}`);
     for (const actor of actors) {

@@ -336,6 +336,12 @@
     animation-delay: calc(var(--i, 0) * 100ms + 0.25s);
   }
 
+  .js [data-enter="pop"] {
+    animation-name: enter-pop;
+    animation-timing-function: var(--ease-bounce);
+    transform-origin: left center;
+  }
+
   html.intro-active .page-art,
   html.intro-active .peek-zombie {
     opacity: 0;
@@ -548,6 +554,15 @@
   }
 }
 
+@keyframes enter-pop {
+  from {
+    scale: 0;
+  }
+  to {
+    scale: none;
+  }
+}
+
 @keyframes word-up {
   from {
     translate: 0 110%;
@@ -610,4 +625,21 @@
 .faq[open]::details-content {
   block-size: auto;
   opacity: 1;
+}
+
+a,
+button,
+summary {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: none) {
+  .card:active {
+    transform: scale(0.985);
+  }
+
+  .chip:active,
+  .filter-chip:active {
+    transform: scale(0.96);
+  }
 }
