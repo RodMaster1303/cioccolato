@@ -18,7 +18,7 @@ El ADR 0010 dejó todas las poses referenciadas en alguna página, pero el dueñ
 
 ## Medición
 
-- **Presencia por vista** (móvil 390 px, tablet 820 px, escritorio 1440 px, ocho páginas, menú móvil abierto donde existe): 55 de 55 imágenes con caja visible en las tres.
+- **Presencia por vista** (móvil 412 px, tablet 820 px, escritorio 1440 px, ocho páginas, menú móvil abierto donde existe): 55 de 55 imágenes con caja visible en las tres. Repetido después en 360 px, 768 px, 844 x 390 apaisado, 1180 x 820 y 1366 x 768: 55 de 55 en todos.
 - **Pintado real sin interacción en la portada** (se muestrea la pantalla mientras corre el preloader, se espera en el hero y se recorre la página): 36 de 36 caras en escritorio y en tablet. En móvil, 35 de 36 en cada corrida, con una cara distinta faltante cada vez por el intervalo de muestreo y los tiempos al azar de las rutinas; entre corridas se vieron las 36. `pivi-peek` aparece en la portada desde este cambio.
 
 ## Alternativas consideradas
